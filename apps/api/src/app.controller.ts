@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { buildRoadmapPrompt } from '@rave/utils';
 import { AppService } from './app.service';
 
 @Controller()
