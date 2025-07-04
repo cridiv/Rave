@@ -3,9 +3,6 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2023",
-    "declaration": true,
-    "outDir": "./dist",
-    "rootDir": "src",
 
     "sourceMap": true,
     "esModuleInterop": true,
@@ -22,9 +19,8 @@
     "noFallthroughCasesInSwitch": false
   },
   "include": ["src"],
-  "references": [
-    {
-      "path": "../../packages/utils"
-    }
-  ]
+  "compilerOptions.paths": {
+    "@rave/utils": ["../../packages/utils/src/index.ts"],
+    "@rave/types": ["../../packages/types/src/index.ts"]
+  }
 }

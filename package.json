@@ -7,11 +7,17 @@
     "dev:web": "cd apps/web && npm run dev",
     "dev:api": "cd apps/api && npm run start:dev",
     "lint": "turbo run lint",
+    "clean": "rimraf dist",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.7",
+    "nodemon": "^3.1.10",
     "prettier": "^3.6.0",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "turbo": "^2.5.4",
     "typescript": "5.8.2"
   },

@@ -1,28 +1,51 @@
-export function buildRoadmapPrompt(userMessage: string): string {
+
+/**
+ * Builds a prompt for generating a structured roadmap from a preprocessed goal.
+ * @param goal - The user's learning goal (e.g., "Learn React, TypeScript, and Tailwind")
+ * @param known - Technologies the user already knows (e.g., ["HTML", "CSS"])
+ * @param experienceLevel - Optional level of experience (e.g., "beginner")
+ */
+export function buildRoadmapPrompt(
+  goal: string,
+  known: string[] = [],
+  experienceLevel?: 'beginner' | 'intermediate' | 'advanced'
+): string {
+  const knownTech = known.length ? `Avoid including: ${known.join(', ')}.` : '';
+  const levelHint = experienceLevel ? `User is ${experienceLevel}-level.` : '';
+
   return `
-You are an expert AI roadmap builder.
+You are an expert roadmap architect. Given a user's goal, generate a personalized learning roadmap in JSON format.
 
-Take the user's message and generate a learning roadmap broken into STAGES.
-Each stage should contain NODES with:
-- title
-- short description
-- 1–3 resources (video, article, project) with title + link
+---
 
-Respond strictly in this JSON format:
+### Goal:
+"""${goal}"""
+
+### Context:
+- ${knownTech}
+- ${levelHint}
+- Provide ONLY resources that are free and beginner-friendly if applicable.
+- Include only relevant technologies the user wants to learn.
+
+---
+
+### Roadmap Format:
+Return ONLY valid JSON with this structure:
+
 [
   {
     "id": "stage-1",
-    "title": "Intro to Mobile Development",
+    "title": "Stage title",
     "nodes": [
       {
         "id": "node-1",
-        "title": "What is a Mobile Developer?",
-        "description": "A mobile dev builds apps for Android/iOS...",
+        "title": "Node title",
+        "description": "Brief explanation of the topic",
         "resources": [
           {
-            "type": "video",
-            "title": "Intro to Mobile Dev",
-            "link": "https://youtube.com/..."
+            "type": "video" | "article" | "project",
+            "title": "Resource title",
+            "link": "https://..."
           }
         ]
       }
@@ -30,6 +53,12 @@ Respond strictly in this JSON format:
   }
 ]
 
-User Message: """${userMessage}"""
+### Guidelines:
+- Do NOT include any extra explanation or commentary before or after the JSON.
+- Do NOT include technologies the user already knows.
+- Do NOT repeat generic steps like "learn HTML" if the user already knows it.
+- Make sure resource links are real, high-quality, and free.
+- Tailor roadmap structure to the user's goal only.
+
 `.trim();
 }
