@@ -56,9 +56,10 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      <div className="text-center text-slate-500 text-xl font-thin">
+      {/* <div className="text-center text-slate-500 text-xl font-thin">
         Rave is a unique AI Roadmap generator that helps you find your Path{" "}
-      </div>
+      </div> */}
+      <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
     </div>
   );
 };

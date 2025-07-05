@@ -15,7 +15,14 @@ const NavBar = () => {
   rounded-full
   border 
   border-white/20 
-  sticky
+  fixed
+  top-0
+  left-0
+  right-20
+  z-50
+  mx-4
+  mr-20
+  mt-4
   hover:bg-gradient-to-r
   hover:from-white/15
   hover:via-white/20
