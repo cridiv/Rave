@@ -1,11 +1,11 @@
 import NavBar from "./components/NavBar";
+import Hero from "./components/Hero";
 
 export default function Home() {
   return (
     <div className="p-8">
       <NavBar />
-      <h1>hey</h1>
-      <button className="btn btn-primary rounded-full">Click me!</button>
+      <Hero />
     </div>
   );
 }
