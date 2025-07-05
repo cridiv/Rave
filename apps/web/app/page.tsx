@@ -1,8 +1,11 @@
+import NavBar from "./components/NavBar";
+
 export default function Home() {
   return (
-    <div>
-      <p className="text-5xl text-sky-500">Welcome</p>
-      <button className="btn">click me</button>
+    <div className="p-8">
+      <NavBar />
+      <h1>hey</h1>
+      <button className="btn btn-primary rounded-full">Click me!</button>
     </div>
   );
 }
