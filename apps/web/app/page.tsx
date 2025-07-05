@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      <h1 className="text-3xl text-amber-500">Welcome</h1>
+      <p className="text-5xl text-sky-500">Welcome</p>
       <button className="btn">click me</button>
     </div>
   );
