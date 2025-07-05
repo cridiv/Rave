@@ -7,7 +7,11 @@ const HowToUse = () => {
     <div className="py-16 px-5 max-w-7xl mx-auto">
       {/* Section Header */}
       <div className="text-center mb-16">
-        <h2 className="text-4xl lg:text-5xl font-bold mb-4">How It Works</h2>
+        <div className="inline-flex items-center justify-center px-4 py-2  border-sky-500 rounded-full bg-sky-500/10 border border-sky-500/20 mb-6">
+          <span className="text-sky-500 text-sm font-medium uppercase tracking-wider">
+            How to use
+          </span>
+        </div>
         <p className="text-xl text-gray-400 max-w-2xl mx-auto">
           Create your personalized AI roadmaps called "Journeys" in just a few
           simple steps
@@ -18,7 +22,7 @@ const HowToUse = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         {/* Step 1 */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-sky-500 to-sky-400 flex items-center justify-center text-2xl font-bold text-white mb-4 shadow-lg shadow-sky-500/30">
+          <div className="w-16 h-16 rounded-full border-[3px] border-sky-500 flex items-center justify-center text-2xl font-bold text-sky-500 mb-4 shadow-lg shadow-sky-500/30">
             1
           </div>
           <h3 className="text-xl font-semibold mb-2">Log Into Your Account</h3>
@@ -30,7 +34,7 @@ const HowToUse = () => {
 
         {/* Step 2 */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-pink-400 flex items-center justify-center text-2xl font-bold text-white mb-4 shadow-lg shadow-pink-500/30">
+          <div className="w-16 h-16 rounded-full border-[3px] border-sky-500 flex items-center justify-center text-2xl font-bold text-sky-500 mb-4 shadow-lg shadow-sky-500/30">
             2
           </div>
           <h3 className="text-xl font-semibold mb-2">
@@ -44,7 +48,7 @@ const HowToUse = () => {
 
         {/* Step 3 */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-r from-green-500 to-green-400 flex items-center justify-center text-2xl font-bold text-white mb-4 shadow-lg shadow-green-500/30">
+          <div className="w-16 h-16 rounded-full border-[3px] border-sky-500 flex items-center justify-center text-2xl font-bold text-sky-500 mb-4 shadow-lg shadow-sky-500/30">
             3
           </div>
           <h3 className="text-xl font-semibold mb-2">Get Your AI Roadmap</h3>
@@ -94,9 +98,6 @@ const HowToUse = () => {
           progress, and connect with mentors along the way
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <button className="btn btn-outline border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white transition-all duration-300 rounded-full px-8">
-            View Sample Roadmaps
-          </button>
           <button className="btn bg-gradient-to-r from-sky-500 to-sky-400 text-white transition-all duration-300 rounded-full px-8 hover:shadow-sky-500/50 hover:-translate-y-1">
             Create Your Journey
           </button>
