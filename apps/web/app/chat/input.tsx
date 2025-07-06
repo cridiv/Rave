@@ -41,6 +41,7 @@ const Input: React.FC = () => {
       });
 
       const data = await res.json();
+      console.log('🌐 RESPONSE:', data);
       setRoadmap(data.roadmap || '⚠️ No roadmap received');
     } catch (err) {
       console.error('❌ Error:', err);
