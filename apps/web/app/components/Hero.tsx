@@ -44,8 +44,8 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* SVG/Animation Column */}
-        <div className="flex items-center justify-center">
+        {/* SVG/Animation Column - Hidden on mobile */}
+        <div className="hidden lg:flex items-center justify-center">
           <div style={{ width: "100%", height: "600px", position: "relative" }}>
             <Orb
               hoverIntensity={0.5}
@@ -56,9 +56,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-      {/* <div className="text-center text-slate-500 text-xl font-thin">
-        Rave is a unique AI Roadmap generator that helps you find your Path{" "}
-      </div> */}
       <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
     </div>
   );
