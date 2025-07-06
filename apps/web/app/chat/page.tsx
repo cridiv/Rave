@@ -8,10 +8,15 @@ export default function ChatPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  // ✅ Fix hydration mismatch by generating particles on client only
+  const [particles, setParticles] = useState<
+    { left: string; top: string; duration: string }[]
+  >([]);
+
   useEffect(() => {
     setIsLoaded(true);
-    
-    const handleMouseMove = (e) => {
+
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: e.clientX / window.innerWidth,
         y: e.clientY / window.innerHeight,
@@ -19,6 +24,15 @@ export default function ChatPage() {
     };
 
     window.addEventListener('mousemove', handleMouseMove);
+
+    // ✅ Generate particles after mount only (no mismatch with SSR)
+    const generated = Array.from({ length: 6 }).map(() => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      duration: `${3 + Math.random() * 2}s`,
+    }));
+    setParticles(generated);
+
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
@@ -48,94 +62,111 @@ export default function ChatPage() {
           `,
         }}
       >
-        
-        {/* Interactive cursor glow */}
-        <div 
+        {/* ✅ Interactive cursor glow */}
+        <div
           className="fixed pointer-events-none w-96 h-96 rounded-full opacity-20 blur-3xl transition-all duration-500"
           style={{
-            background: 'radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%)',
+            background:
+              'radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%)',
             left: `${mousePosition.x * 100}%`,
             top: `${mousePosition.y * 100}%`,
             transform: 'translate(-50%, -50%)',
           }}
         />
 
-        {/* Animated background particles */}
+        {/* ✅ Animated background particles (client-only) */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(6)].map((_, i) => (
+          {particles.map((pos, i) => (
             <div
               key={i}
               className="absolute w-2 h-2 bg-sky-400/10 rounded-full animate-pulse"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                left: pos.left,
+                top: pos.top,
                 animationDelay: `${i * 0.5}s`,
-                animationDuration: `${3 + Math.random() * 2}s`,
+                animationDuration: pos.duration,
               }}
             />
           ))}
         </div>
 
         <main className="flex flex-col items-center justify-center min-h-screen pt-20 px-4 text-center relative z-10">
-          {/* Heading with staggered animation */}
-          <div className={`mb-8 space-y-3 transition-all duration-1000 ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
+          {/* Heading */}
+          <div
+            className={`mb-8 space-y-3 transition-all duration-1000 ${
+              isLoaded
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             <h1 className="text-4xl lg:text-5xl font-bold leading-tight bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent">
               What do you want to build?
             </h1>
-            <p className={`text-lg text-[#BFC1C2] transition-all duration-1000 delay-300 ${
-              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-            }`}>
+            <p
+              className={`text-lg text-[#BFC1C2] transition-all duration-1000 delay-300 ${
+                isLoaded
+                  ? 'opacity-100 translate-y-0'
+                  : 'opacity-0 translate-y-4'
+              }`}
+            >
               Generate personalized roadmaps by chatting with AI.
             </p>
           </div>
 
-          {/* Chat Input Box with enhanced styling */}
-          <div className={`w-full max-w-2xl mb-12 transition-all duration-1000 delay-500 ${
-            isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}>
+          {/* Input */}
+          <div
+            className={`w-full max-w-2xl mb-12 transition-all duration-1000 delay-500 ${
+              isLoaded
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
             <div className="relative">
-              {/* Neumorphism glow effect */}
-              <div/>
-                  <Input />
-                </div>
-              </div>
+              <Input />
+            </div>
+          </div>
 
-          {/* Enhanced Suggestion Pills */}
- <div className={`flex gap-3 justify-center max-w-none overflow-x-auto transition-all duration-1000 delay-700 ${ 
-          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8' 
-        }`}>
-          {[
-            'Generate a roadmap for a frontend developer',
-            'Learn machine learning in 6 months',
-            'Become a full-stack developer',
-          ].map((text, index) => (
-            <button
-              key={text}
-              className={`group px-6 py-3 bg-white/5 hover:bg-sky-500/10 border border-white/10 hover:border-sky-400/50 rounded-full text-sm text-gray-300 hover:text-white transition-all duration-300 shadow-lg hover:shadow-sky-500/30 hover:-translate-y-1 backdrop-blur-sm whitespace-nowrap flex-shrink-0 ${ 
-                isLoaded ? 'animate-none' : 'animate-pulse' 
-              }`}
-              style={{
-                animationDelay: `${index * 0.1}s`,
-              }}
-            >
-              <span className="relative z-10">{text}</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-sky-500/0 to-sky-500/0 group-hover:from-sky-500/10 group-hover:to-indigo-500/10 rounded-full transition-all duration-300" />
-            </button>
-          ))}
-        </div>
+          {/* Suggestion Pills */}
+          <div
+            className={`flex gap-3 justify-center max-w-none overflow-x-auto transition-all duration-1000 delay-700 ${
+              isLoaded
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-8'
+            }`}
+          >
+            {[
+              'Generate a roadmap for a frontend developer',
+              'Learn machine learning in 6 months',
+              'Become a full-stack developer',
+            ].map((text, index) => (
+              <button
+                key={text}
+                className={`group px-6 py-3 bg-white/5 hover:bg-sky-500/10 border border-white/10 hover:border-sky-400/50 rounded-full text-sm text-gray-300 hover:text-white transition-all duration-300 shadow-lg hover:shadow-sky-500/30 hover:-translate-y-1 backdrop-blur-sm whitespace-nowrap flex-shrink-0 ${
+                  isLoaded ? 'animate-none' : 'animate-pulse'
+                }`}
+                style={{
+                  animationDelay: `${index * 0.1}s`,
+                }}
+              >
+                <span className="relative z-10">{text}</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-sky-500/0 to-sky-500/0 group-hover:from-sky-500/10 group-hover:to-indigo-500/10 rounded-full transition-all duration-300" />
+              </button>
+            ))}
+          </div>
 
-        {/* Floating action indicators */}
-        <div className={`mt-8 flex items-center gap-2 text-xs text-gray-500 transition-all duration-1000 delay-1000 justify-center ${ 
-          isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4' 
-        }`}>
-          <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse" />
-          <span>Start typing to begin your personalized journey</span>
-        </div>
+          {/* Footer Tip */}
+          <div
+            className={`mt-8 flex items-center gap-2 text-xs text-gray-500 transition-all duration-1000 delay-1000 justify-center ${
+              isLoaded
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 translate-y-4'
+            }`}
+          >
+            <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse" />
+            <span>Start typing to begin your personalized journey</span>
+          </div>
 
-        {/* Optional: bottom spacing */}
-        <div className="h-24" />
+          <div className="h-24" />
         </main>
       </div>
     </>
