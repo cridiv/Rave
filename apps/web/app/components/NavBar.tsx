@@ -109,9 +109,14 @@ const NavBar = () => {
       </div>
 
       <div className="navbar-end relative z-10">
+          <Link
+             href="/chat"
+               className="relative text-white transition-all duration-300 px-3 py-2 overflow-hidden group"
+          >
         <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-all duration-300">
           Get Started
         </button>
+        </Link>
       </div>
 
       {/* Full-screen mobile menu with animation */}
