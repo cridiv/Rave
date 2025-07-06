@@ -109,11 +109,13 @@ const NavBar = () => {
       </div>
 
       <div className="navbar-end relative z-10">
-        <Link href="/signin">
+         <Link href="/signin">
           <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-all duration-300">
             Get Started
           </button>
         </Link>
+      </div>
+
       </div>
 
       {/* Full-screen mobile menu with animation */}
