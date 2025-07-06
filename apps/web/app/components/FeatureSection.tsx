@@ -13,8 +13,8 @@ const FeatureSection = () => {
           </span>
         </div>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Discover what makes Rave the perfect choice for creating RoadMap
-          Journeys
+          Discover what makes Rave the perfect choice for creating personalized
+          AI learning roadmaps
         </p>
       </div>
 
@@ -35,15 +35,18 @@ const FeatureSection = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12,6 12,12 16,12" />
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
             <h3 className="text-xl font-semibold pt-6 mb-3">
-              Time-Limited Rooms
+              Personalized Roadmaps
             </h3>
             <p className="text-gray-400 flex-grow pt-2">
-              All chat rooms automatically expire after a set time period,
-              ensuring conversations remain ephemeral.
+              AI-generated learning paths tailored to your specific goals, skill
+              level, and time constraints.
             </p>
           </div>
         </SpotlightCard>
@@ -63,13 +66,16 @@ const FeatureSection = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5l6.74-6.76z"></path>
+              <line x1="16" y1="8" x2="2" y2="22"></line>
+              <line x1="17.5" y1="15" x2="9" y2="15"></line>
             </svg>
-            <h3 className="text-xl font-semibold pt-6 mb-3">Privacy Focused</h3>
+            <h3 className="text-xl font-semibold pt-6 mb-3">
+              Customizable Journeys
+            </h3>
             <p className="text-gray-400 flex-grow pt-2">
-              We don't store your messages after the chat expires. Your data is
-              never used for training or analytics.
+              Edit and customize every aspect of your learning journey, from
+              milestones to resources and deadlines.
             </p>
           </div>
         </SpotlightCard>
@@ -89,17 +95,14 @@ const FeatureSection = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="8.5" cy="7" r="4" />
-              <line x1="20" y1="8" x2="20" y2="14" />
-              <line x1="23" y1="11" x2="17" y2="11" />
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
             </svg>
             <h3 className="text-xl font-semibold pt-6 mb-3">
-              Complete Anonymity
+              Progress Tracking
             </h3>
             <p className="text-gray-400 flex-grow pt-2">
-              Users can chat without revealing their identity, encouraging open
-              and honest communication
+              Monitor your advancement with interactive visualizations and
+              detailed analytics on your learning path.
             </p>
           </div>
         </SpotlightCard>
@@ -119,17 +122,17 @@ const FeatureSection = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-              <line x1="12" y1="19" x2="12" y2="23" />
-              <line x1="8" y1="23" x2="16" y2="23" />
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
             <h3 className="text-xl font-semibold pt-6 mb-3">
-              Optional Moderation
+              Collaborative Learning
             </h3>
             <p className="text-gray-400 flex-grow pt-2">
-              Choose between supervised rooms with AI toxicity filtering or
-              unsupervised free speech.
+              Share your roadmaps with peers or mentors, enabling collaborative
+              feedback and group learning experiences.
             </p>
           </div>
         </SpotlightCard>
@@ -149,14 +152,42 @@ const FeatureSection = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              <path d="M13 8H7" />
-              <path d="M13 12H7" />
+              <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
             </svg>
-            <h3 className="text-xl font-semibold pt-6 mb-3">Easy Sharing</h3>
+            <h3 className="text-xl font-semibold pt-6 mb-3">
+              Adaptive Recommendations
+            </h3>
             <p className="text-gray-400 flex-grow pt-2">
-              Create a room and share the link instantly with anyone you want to
-              join the conversation.
+              Our AI continuously adapts your learning path based on your
+              progress, feedback, and changing goals.
+            </p>
+          </div>
+        </SpotlightCard>
+
+        <SpotlightCard
+          className="custom-spotlight-card p-7 h-[400px] max-w-[320px] pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-violet-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-violet-500/40 transition-all duration-300"
+          spotlightColor="rgba(139, 92, 246, 0.2)"
+        >
+          <div className="flex flex-col items-start text-left h-full">
+            <svg
+              className="w-12 h-12 mb-4 text-violet-500"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            <h3 className="text-xl font-semibold pt-6 mb-3">
+              Resource Integration
+            </h3>
+            <p className="text-gray-400 flex-grow pt-2">
+              Seamlessly connect with the best learning materials from across the web - courses, articles, videos, and practice exercises are automatically curated and integrated into your journey.
             </p>
           </div>
         </SpotlightCard>

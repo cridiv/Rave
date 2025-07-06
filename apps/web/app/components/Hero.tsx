@@ -9,9 +9,9 @@ const Hero = () => {
   };
 
   return (
-    <div className="pt-4 font-proxima min-h-screen">
+    <div className="pt-4 font-proxima min-h-screen relative">
       {/* Hero Content - Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[80vh] px-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[80vh] px-5 relative z-10">
         {/* Text Column */}
 
         <div className="flex flex-col justify-center space-y-6">
@@ -35,10 +35,10 @@ const Hero = () => {
 
           {/* Optional: Add CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-pink-sky/75 hover:-translate-y-1 transition-transform duration-200">
+            <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-transform duration-200">
               Get Started
             </button>
-            <button className="btn text-white rounded-full hadow-lg shadow-sky-500/50 border-sky-500 hover:-translate-y-1 transition-transform duration-200">
+            <button className="btn text-white rounded-full shadow-lg shadow-sky-500/50 border-sky-500 hover:-translate-y-1 transition-transform duration-200">
               Learn More
             </button>
           </div>
