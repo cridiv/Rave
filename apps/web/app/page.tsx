@@ -17,3 +17,4 @@ export default function Home() {
     </div>
   );
 }
+// completed the landing page feature
