@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import SpotlightCard from "../bits/SpotlightCard";
 
 const HowToUse = () => {
@@ -75,9 +76,12 @@ const HowToUse = () => {
                   Experience how our AI creates personalized learning roadmaps
                   tailored to your goals
                 </p>
-                <button className="btn bg-sky-500 text-white px-8 py-3 rounded-full shadow-lg shadow-sky-500/30 border-none hover:shadow-sky-500/50 hover:-translate-y-1 transition-all duration-300">
+                <Link
+                  href="/signin"
+                  className="btn bg-sky-500 text-white px-8 py-3 rounded-full shadow-lg shadow-sky-500/30 border-none hover:shadow-sky-500/50 hover:-translate-y-1 transition-all duration-300"
+                >
                   Try Sample Journey
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -98,9 +102,12 @@ const HowToUse = () => {
           progress, and connect with mentors along the way
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <button className="btn bg-gradient-to-r from-sky-500 to-sky-400 text-white transition-all duration-300 rounded-full px-8 hover:shadow-sky-500/50 hover:-translate-y-1">
+          <Link
+            href="/signin"
+            className="btn bg-gradient-to-r from-sky-500 to-sky-400 text-white transition-all duration-300 rounded-full px-8 hover:shadow-sky-500/50 hover:-translate-y-1"
+          >
             Create Your Journey
-          </button>
+          </Link>
         </div>
       </div>
       <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
