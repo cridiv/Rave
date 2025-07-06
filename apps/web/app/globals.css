@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,5 +21,11 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  height: auto;
   font-family: sans-serif;
+}
+
+/* Add scroll padding to account for fixed navbar */
+html {
+  scroll-padding-top: 120px; /* Adjust this value based on your navbar height */
 }
