@@ -1,11 +1,17 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import BlurText from "../bits/BlurText";
 import Orb from "../bits/Orb";
 
 const Hero = () => {
   const handleAnimationComplete = () => {
     console.log("Animation completed!");
+  };
+
+  // Function to handle button click and navigate
+  const MoveToSignIn = () => {
+    window.location.href = "/signin";
   };
 
   return (
@@ -33,14 +39,21 @@ const Hero = () => {
             />
           </div>
 
-          {/* Optional: Add CTA buttons */}
+          {/* CTA buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-transform duration-200">
+            <Link
+              href="/signin"
+              className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-transform duration-200"
+            >
               Get Started
-            </button>
-            <button className="btn text-white rounded-full shadow-lg shadow-sky-500/50 border-sky-500 hover:-translate-y-1 transition-transform duration-200">
+            </Link>
+
+            <Link
+              href="/#features"
+              className="btn text-white rounded-full shadow-lg shadow-sky-500/50 border-sky-500 hover:-translate-y-1 transition-transform duration-200"
+            >
               Learn More
-            </button>
+            </Link>
           </div>
         </div>
 

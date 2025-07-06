@@ -109,9 +109,11 @@ const NavBar = () => {
       </div>
 
       <div className="navbar-end relative z-10">
-        <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-all duration-300">
-          Get Started
-        </button>
+        <Link href="/signin">
+          <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-all duration-300">
+            Get Started
+          </button>
+        </Link>
       </div>
 
       {/* Full-screen mobile menu with animation */}
@@ -183,9 +185,11 @@ const NavBar = () => {
                   transition={{ delay: 0.5 }}
                   className="mt-12"
                 >
-                  <button className="btn bg-gradient-to-r from-sky-500 to-sky-400 text-white text-xl px-10 py-4 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-all duration-300">
-                    Get Started
-                  </button>
+                  <Link href="/SignIn" onClick={toggleMenu}>
+                    <button className="btn bg-gradient-to-r from-sky-500 to-sky-400 text-white text-xl px-10 py-4 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-all duration-300">
+                      Get Started
+                    </button>
+                  </Link>
                 </motion.div>
               </div>
             </div>
