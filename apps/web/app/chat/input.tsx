@@ -34,11 +34,11 @@ const Input: React.FC = () => {
     setRoadmap('');
 
     try {
-      const res = await fetch('/api/roadmap/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: inputValue }),
-      });
+      const res = await fetch('http://localhost:5000/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userMessage: inputValue }),
+    });
 
       const data = await res.json();
       console.log('🌐 RESPONSE:', data);
@@ -118,11 +118,37 @@ const Input: React.FC = () => {
       </div>
 
       {/* ✅ Roadmap display */}
-      {roadmap && (
-        <div className="mt-6 bg-white/5 text-gray-100 p-4 rounded-lg border border-white/10 text-sm whitespace-pre-line">
-          {roadmap}
-        </div>
-      )}
+{roadmap && (
+  <div className="mt-6 bg-white/5 text-gray-100 p-4 rounded-lg border border-white/10 text-sm space-y-6">
+    {roadmap.map((stage: any) => (
+      <div key={stage.id}>
+        <h3 className="text-lg font-semibold mb-2">{stage.title}</h3>
+        <ul className="list-disc list-inside space-y-2">
+          {stage.nodes.map((node: any) => (
+            <li key={node.id}>
+              <p className="font-medium">{node.title}</p>
+              <p className="text-gray-400">{node.description}</p>
+              <ul className="ml-4 mt-1 list-[circle] space-y-1">
+                {node.resources.map((res: any, idx: number) => (
+                  <li key={idx}>
+                    <a
+                      href={res.link}
+                      className="text-sky-400 hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      [{res.type}] {res.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+)}
     </div>
   );
 };
