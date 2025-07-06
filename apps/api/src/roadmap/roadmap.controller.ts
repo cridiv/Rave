@@ -30,4 +30,11 @@ export class RoadmapController {
   async togglePublic(@Param('id') id: string, @Body() body: { userId: string; isPublic: boolean }) {
     return this.roadmapService.togglePublic(id, body.userId, body.isPublic);
   }
+
+  @Post('generate')
+  generate(@Body('prompt') prompt: string) {
+    return {
+      roadmap: `Here is your roadmap for: ${prompt}`,
+    };
+  }
 }
