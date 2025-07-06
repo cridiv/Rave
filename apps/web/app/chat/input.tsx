@@ -34,7 +34,7 @@ const Input: React.FC = () => {
     setRoadmap('');
 
     try {
-      const res = await fetch('/api/roadmap/generate', {
+      const res = await fetch('/api/roadmap/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: inputValue }),
@@ -62,11 +62,10 @@ const Input: React.FC = () => {
               : 'inset 0 2px 6px rgba(0,0,0,0.2), inset 0 -2px 6px rgba(255,255,255,0.02), 0 0 10px rgba(14,165,233,0.05)',
           }}
         >
-          {/* ✅ Send button */}
 <div
-  className="absolute top-4 right-4 z-20" // ⬅️ z-20 ensures it's above the textarea
+  className="absolute top-4 right-4 z-20" 
   style={{
-    pointerEvents: isTyping ? 'auto' : 'none', // ⬅️ Direct inline pointer control
+    pointerEvents: isTyping ? 'auto' : 'none', 
     opacity: isTyping ? 1 : 0,
     transform: isTyping ? 'translateX(0) scale(1)' : 'translateX(16px) scale(0.95)',
     transition: 'all 0.3s ease-out',
