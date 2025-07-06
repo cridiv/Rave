@@ -32,9 +32,10 @@ export class RoadmapController {
   }
 
   @Post('generate')
-  generate(@Body('prompt') prompt: string) {
+   generate(@Body() body: { prompt: string }) {
+    const { prompt } = body;
     return {
-      roadmap: `Here is your roadmap for: ${prompt}`,
+      roadmap: `🧠 Here is your roadmap for: ${prompt}`,
     };
   }
 }
