@@ -9,6 +9,10 @@
     "isolatedModules": true,
     "types": ["node"],
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "plugins": [
       {
         "name": "next"
