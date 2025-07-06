@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import FeatureSection from "./components/FeatureSection";
 import HowToUse from "./components/HowToUse";
 import FAQsSection from "./components/FAQsSection";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <FeatureSection />
       <HowToUse />
       <FAQsSection />
+      <Footer />
     </div>
   );
 }
