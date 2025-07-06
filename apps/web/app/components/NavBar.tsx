@@ -18,11 +18,13 @@ const NavBar = () => {
   fixed
   top-0
   left-0
-  right-20
+  right-0
   z-50
   mx-4
-  mr-20
+  ml-6
   mt-4
+  p-2
+  w-[95%]
   hover:bg-gradient-to-r
   hover:from-white/15
   hover:via-white/20
