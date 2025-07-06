@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -67,30 +68,42 @@ const NavBar = () => {
             </svg>
           </div>
         </div>
-        <a className="btn btn-ghost text-xl font-bold border-none bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text hover:from-sky-400 hover:to-sky-200 transition-all duration-300">
+        <Link
+          href="/"
+          className="btn btn-ghost text-xl font-bold border-none bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text hover:from-sky-400 hover:to-sky-200 transition-all duration-300"
+        >
           Rave
-        </a>
+        </Link>
       </div>
 
       <div className="navbar-center hidden lg:flex relative z-10">
         <ul className="menu menu-horizontal px-1">
           <li className="">
-            <a className=" relative text-white hover: transition-all duration-300 px-3 py-2 pr-6 overflow-hidden group">
+            <Link
+              href="#features"
+              className="relative text-white hover: transition-all duration-300 px-3 py-2 pr-6 overflow-hidden group"
+            >
               Features
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-500 shadow-[0_0_10px_#0ea5e9] group-hover:w-full group-hover:shadow-[0_0_20px_#0ea5e9] transition-all duration-500 ease-out"></span>
-            </a>
+            </Link>
           </li>
           <li>
-            <a className="relative text-white hover: transition-all  duration-300 px-3 py-2 pr-6 overflow-hidden group">
+            <Link
+              href="#how-it-works"
+              className="relative text-white hover: transition-all duration-300 px-3 py-2 pr-6 overflow-hidden group"
+            >
               How It Works
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-500 shadow-[0_0_10px_#0ea5e9] group-hover:w-full group-hover:shadow-[0_0_20px_#0ea5e9] transition-all duration-500 ease-out"></span>
-            </a>
+            </Link>
           </li>
           <li>
-            <a className="relative text-white hover: transition-all duration-300 px-3 py-2 overflow-hidden group">
-              Pricing
+            <Link
+              href="#faqs"
+              className="relative text-white hover: transition-all duration-300 px-3 py-2 overflow-hidden group"
+            >
+              FAQs
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-500 shadow-[0_0_10px_#0ea5e9] group-hover:w-full group-hover:shadow-[0_0_20px_#0ea5e9] transition-all duration-500 ease-out"></span>
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
@@ -140,25 +153,28 @@ const NavBar = () => {
 
               <div className="flex flex-col justify-center items-center flex-grow">
                 <motion.ul className="flex flex-col items-center gap-8 text-center">
-                  {["Features", "How It Works", "Pricing"].map(
-                    (item, index) => (
-                      <motion.li
-                        key={item}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 + 0.2 }}
-                        className="w-full"
+                  {[
+                    { name: "Features", href: "#features" },
+                    { name: "How It Works", href: "#how-it-works" },
+                    { name: "FAQs", href: "#faqs" },
+                  ].map((item, index) => (
+                    <motion.li
+                      key={item.name}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 + 0.2 }}
+                      className="w-full"
+                    >
+                      <Link
+                        href={item.href}
+                        className="text-3xl font-medium text-white block py-3 px-8 relative overflow-hidden group"
+                        onClick={toggleMenu}
                       >
-                        <a
-                          className="text-3xl font-medium text-white block py-3 px-8 relative overflow-hidden group"
-                          onClick={toggleMenu}
-                        >
-                          {item}
-                          <span className="absolute bottom-0 left-1/4 w-0 h-0.5 bg-sky-500 shadow-[0_0_10px_#0ea5e9] group-hover:w-1/2 group-hover:shadow-[0_0_20px_#0ea5e9] transition-all duration-500 ease-out"></span>
-                        </a>
-                      </motion.li>
-                    )
-                  )}
+                        {item.name}
+                        <span className="absolute bottom-0 left-1/4 w-0 h-0.5 bg-sky-500 shadow-[0_0_10px_#0ea5e9] group-hover:w-1/2 group-hover:shadow-[0_0_20px_#0ea5e9] transition-all duration-500 ease-out"></span>
+                      </Link>
+                    </motion.li>
+                  ))}
                 </motion.ul>
 
                 <motion.div

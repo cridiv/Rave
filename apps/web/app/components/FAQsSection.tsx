@@ -113,7 +113,7 @@ const FAQsSection = () => {
   ];
 
   return (
-    <div className="py-20 px-5 max-w-7xl mx-auto">
+    <div id="faqs" className="py-20 px-5 max-w-7xl mx-auto">
       {/* Section Header */}
       <div className="text-center mb-16">
         <div className="inline-flex items-center justify-center px-4 py-2 border-sky-500 rounded-full bg-sky-500/10 border border-sky-500/20 mb-6">
