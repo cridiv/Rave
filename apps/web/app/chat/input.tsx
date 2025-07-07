@@ -9,8 +9,6 @@ const Input: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [roadmap, setRoadmap] = useState('');
-  const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -28,28 +26,37 @@ const Input: React.FC = () => {
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
 
-  const handleSend = async () => {
-    if (!inputValue.trim()) return;
-    setLoading(true);
-    setRoadmap('');
-
-    try {
-      const res = await fetch('http://localhost:5000/chat', {
+const handleSend = async () => {
+  if (!inputValue.trim()) return;
+  setLoading(true);
+  setRoadmap('');
+  
+  try {
+    const res = await fetch('http://localhost:5000/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userMessage: inputValue }),
     });
 
-      const data = await res.json();
-      console.log('🌐 RESPONSE:', data);
-      setRoadmap(data.roadmap || '⚠️ No roadmap received');
-    } catch (err) {
-      console.error('❌ Error:', err);
-      setRoadmap('❌ Something went wrong. Try again.');
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      if (res.status === 404) {
+        throw new Error('🚫 Backend route not found (404)');
+      } else if (res.status === 500) {
+        throw new Error('💥 Server error (500)');
+      } else {
+        throw new Error(`⚠️ Error: ${res.statusText} (${res.status})`);
+      }
     }
-  };
+
+    const data = await res.json();
+    setRoadmap(data.roadmap || '⚠️ No roadmap received');
+  } catch (err: any) {
+    console.error('❌ Fetch error:', err.message);
+    setRoadmap(err.message || '❌ Something went wrong. Try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
@@ -71,18 +78,23 @@ const Input: React.FC = () => {
 
 const [listening, setListening] = useState(false);
 
-const startListening = () => {
-  if (!recognition) {
+const startSpeechRecognition = () => {
+  if (typeof window === 'undefined') return;
+
+  const SpeechRecognition =
+    (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
     alert("Speech Recognition not supported in this browser.");
     return;
   }
 
+  const recognition = new SpeechRecognition();
   recognition.lang = 'en-US';
   recognition.continuous = false;
   recognition.interimResults = false;
 
   recognition.onstart = () => setListening(true);
-
   recognition.onend = () => setListening(false);
 
   recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -92,7 +104,12 @@ const startListening = () => {
   };
 
   recognition.onerror = (event: any) => {
-    console.error("Speech recognition error:", event.error);
+    const silentErrors = ['aborted', 'no-speech', 'not-allowed', 'service-not-allowed'];
+    if (silentErrors.includes(event.error)) {
+      console.warn("Speech recognition warning:", event.error);
+    } else {
+      console.error("Speech recognition error:", event.error);
+    }
     setListening(false);
   };
 
@@ -167,13 +184,16 @@ const startListening = () => {
   onChange={handleFileUpload}
 />
 <button
-  onClick={startListening}
+  onClick={startSpeechRecognition}
   className={`p-2 rounded-lg ${
     listening ? 'bg-sky-600' : 'bg-white/5 hover:bg-white/10'
   } border border-white/10 hover:border-sky-400/30 transition-all duration-200 group`}
 >
   <Mic className="w-4 h-4 text-gray-400 group-hover:text-sky-400" />
 </button>
+{listening && (
+  <p className="text-xs text-sky-400 mt-2 animate-pulse">Listening...</p>
+)}
               </div>
             </div>
           </div>
