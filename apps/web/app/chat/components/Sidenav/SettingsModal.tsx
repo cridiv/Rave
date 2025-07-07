@@ -118,13 +118,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input
+              {/* <input
                 type="checkbox"
                 className="sr-only peer"
                 checked={settings.darkMode}
                 onChange={handleDarkModeToggle}
               />
-              <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+              <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div> */}
+              <p className="text-[10px] p-1 text-red-600 border-red-600 border-solid border-[1px] rounded-full cursor-not-allowed">
+                Coming soon
+              </p>
             </label>
           </div>
 
@@ -214,7 +217,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
           <button
             onClick={saveSettings}
-            className="px-4 py-2 rounded-md bg-sky-600/80 hover:bg-sky-600 text-white transition-colors"
+            className="btn cursor-not-allowed btn-disabled px-4 py-2 rounded-md  bg-sky-600/80 hover:bg-sky-600 text-white transition-colors"
           >
             Save
           </button>

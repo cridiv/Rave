@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { X, Mail, Calendar, Edit } from "lucide-react";
+import { X, Mail, Calendar } from "lucide-react";
 
 type AccountModalProps = {
   isOpen: boolean;
@@ -107,10 +107,6 @@ const AccountModal: React.FC<AccountModalProps> = ({
             <h3 className="text-lg font-semibold text-white">
               {userInfo.name}
             </h3>
-            <button className="mt-1 text-xs text-sky-400 hover:text-sky-300 flex items-center justify-center gap-1">
-              <Edit size={12} />
-              Edit Profile
-            </button>
           </div>
         </div>
 
@@ -130,15 +126,6 @@ const AccountModal: React.FC<AccountModalProps> = ({
               <p className="text-sm text-white">{userInfo.joined}</p>
             </div>
           </div>
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-md bg-sky-600/80 hover:bg-sky-600 text-white transition-colors"
-          >
-            Close
-          </button>
         </div>
       </div>
     </div>

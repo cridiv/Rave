@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -26,12 +26,47 @@ const Sidenav: React.FC<SidenavProps> = ({
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
+  // Check if the screen is mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth >= 1024) {
+        // For desktop, close mobile view if it was open
+        setIsMobileOpen(false);
+      }
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    // Only auto-expand on desktop
+    if (window.innerWidth >= 1024) {
+      setIsExpanded(true);
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    // Only auto-collapse on desktop
+    if (window.innerWidth >= 1024) {
+      setIsExpanded(false);
+    }
+  }, []);
+
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
   const toggleMobileSidenav = () => {
     setIsMobileOpen(!isMobileOpen);
+    // Always expand when opening on mobile
+    if (!isMobileOpen) {
+      setIsExpanded(true);
+    }
   };
 
   // Render the side navigation
@@ -40,7 +75,7 @@ const Sidenav: React.FC<SidenavProps> = ({
       {/* Mobile hamburger menu */}
       <button
         onClick={toggleMobileSidenav}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-full bg-gray-800/50 backdrop-blur-md text-white"
+        className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-full bg-gray-800/50 backdrop-blur-md text-white hover:bg-gray-700/60 transition-colors"
         aria-label="Toggle navigation menu"
       >
         <Menu size={20} />
@@ -48,13 +83,22 @@ const Sidenav: React.FC<SidenavProps> = ({
 
       {/* Sidenav container */}
       <div
-        className={`fixed top-0 left-0 h-full z-40 transition-all duration-300 
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className={`fixed rounded-tr-3xl top-0 left-0 h-full z-40 transition-all duration-300 
           ${isExpanded ? "w-64" : "w-16"} 
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          bg-gray-900/70 backdrop-blur-md border-r border-sky-900/30`}
+          bg-gradient-to-r 
+        from-white/5 
+        via-white/5 
+        to-white/5 
+        backdrop-blur-xl 
+        shadow-2xl 
+        shadow-black/10 border-r border-sky-900/30
+        ${isMobileOpen ? "w-3/4 sm:w-64" : ""}`}
       >
         <div className="flex flex-col h-full">
-          {/* Toggle button */}
+          {/* Toggle button - only on desktop */}
           <button
             onClick={toggleExpanded}
             className="hidden lg:flex self-end p-2 m-2 rounded-full hover:bg-sky-800/20 text-sky-400"
@@ -67,6 +111,16 @@ const Sidenav: React.FC<SidenavProps> = ({
             )}
           </button>
 
+          {/* Close button - only on mobile */}
+          {isMobileOpen && (
+            <button
+              onClick={toggleMobileSidenav}
+              className="lg:hidden self-end p-2 m-2 rounded-full hover:bg-sky-800/20 text-sky-400"
+            >
+              <ChevronLeft size={16} />
+            </button>
+          )}
+
           {/* Chat history section */}
           <div className="flex-1 overflow-y-auto pt-4">
             <div className={`px-3 py-2 ${isExpanded ? "block" : "hidden"}`}>
@@ -74,6 +128,12 @@ const Sidenav: React.FC<SidenavProps> = ({
                 Chat History
               </h3>
             </div>
+
+            {!isExpanded && (
+              <div className="flex justify-center py-2">
+                <MessageSquare size={20} className="text-sky-400" />
+              </div>
+            )}
 
             <div className="space-y-1 px-2">
               {chatHistory.length > 0 ? (
@@ -84,7 +144,6 @@ const Sidenav: React.FC<SidenavProps> = ({
                       text-white hover:bg-sky-800/20 transition-colors
                       ${isExpanded ? "justify-start" : "justify-center"}`}
                   >
-                    <MessageSquare size={18} className="text-sky-400" />
                     {isExpanded && (
                       <span className="ml-3 truncate text-sm">
                         {chat.title}
