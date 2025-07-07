@@ -3,10 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Input from './input';
+import Sidenav from './components/Sidenav/Sidenav';
+import RoadmapDisplay from './components/RoadmapDisplay';
 
 export default function ChatPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [roadmap, setRoadmap] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [particles, setParticles] = useState<
     { left: string; top: string; duration: string }[]
@@ -34,28 +38,47 @@ export default function ChatPage() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
+  const handleSendMessage = async (message: string) => {
+    setLoading(true);
+    setRoadmap(null);
+
+    try {
+      const res = await fetch('http://localhost:5000/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userMessage: message }),
+      });
+
+      const data = await res.json();
+
+      if (data.roadmap) {
+        setRoadmap(data.roadmap);
+      } else {
+        setRoadmap('No roadmap received. Please try a different query.');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setRoadmap('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <Head>
         <title>Rave – Chat</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-          rel="stylesheet"
-        />
       </Head>
 
-    <div 
-      className="min-h-screen w-full fixed inset-0 text-white font-proxima overflow-hidden flex items-center justify-center p-4"
-      style={{
-        background: '#000000',
-      }}
-    >
-        {/* ✅ Interactive cursor glow */}
+      <div
+        className={`min-h-screen w-full fixed inset-0 text-white font-proxima ${
+          roadmap ? 'overflow-y-auto' : 'overflow-hidden'
+        } flex items-center justify-center p-4`}
+        style={{ background: '#000000' }}
+      >
+
+        {/* Interactive glow */}
         <div
           className="fixed pointer-events-none w-96 h-96 rounded-full opacity-20 blur-3xl transition-all duration-500"
           style={{
@@ -67,7 +90,7 @@ export default function ChatPage() {
           }}
         />
 
-        {/* ✅ Animated background particles (client-only) */}
+        {/* Background particles */}
         <div className="absolute inset-0 overflow-hidden">
           {particles.map((pos, i) => (
             <div
@@ -83,45 +106,37 @@ export default function ChatPage() {
           ))}
         </div>
 
-        <main className="flex flex-col items-center justify-center min-h-screen pt-20 px-4 text-center relative z-10">
+        <Sidenav />
+
+        <main className="flex flex-col items-center justify-start pt-32 px-4 text-center relative z-10 w-full max-w-4xl">
           {/* Heading */}
           <div
             className={`mb-8 space-y-3 transition-all duration-1000 ${
-              isLoaded
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-8'
+              isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
             <h1 className="text-3xl lg:text-5xl font-bold leading-tight bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent">
               What do you want to build?
             </h1>
-            <p
-              className={`text-lg text-[#BFC1C2] transition-all duration-1000 delay-300 ${
-                isLoaded
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-4'
-              }`}
-            >
+            <p className="text-lg text-[#BFC1C2]">
               Generate personalized roadmaps by chatting with AI.
             </p>
           </div>
 
-          {/* Input */}
-          <div
-            className={`w-full max-w-2xl mb-12 transition-all duration-1000 delay-500 ${
-              isLoaded
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-8'
-            }`}
-          >
-            <div className="relative">
-              <Input />
-            </div>
+          {/* Chat Input */}
+          <div className="w-full max-w-2xl mb-12">
+            <Input onSendMessage={handleSendMessage} isLoading={loading} />
           </div>
 
-          {/* Suggestion Pills */}
-          <div
-            className={`flex gap-3 justify-center max-w-none overflow-x-auto transition-all duration-1000 delay-700 ${
+          {/* Roadmap Display */}
+          {roadmap && (
+            <div className="w-full pb-40">
+              <RoadmapDisplay roadmap={roadmap} />
+            </div>
+          )}
+
+           {/* Suggestion Pills */}
+          <div className={`flex gap-3 justify-center max-w-none overflow-x-auto transition-all duration-1000 delay-700 ${
               isLoaded
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-8'
