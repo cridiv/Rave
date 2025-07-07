@@ -9,10 +9,11 @@ const Input: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [loading, setLoading] = useState(false);
   const [roadmap, setRoadmap] = useState('');
+  const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // ✅ Auto-resize & update typing state
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setInputValue(value);
@@ -27,7 +28,6 @@ const Input: React.FC = () => {
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
 
-  // ✅ Handle sending prompt
   const handleSend = async () => {
     if (!inputValue.trim()) return;
     setLoading(true);
@@ -50,6 +50,54 @@ const Input: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    setInputValue(text);
+    setIsTyping(text.length > 0);
+    
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  } catch (err) {
+    console.error('❌ Error reading file:', err);
+  }
+};
+
+const [listening, setListening] = useState(false);
+
+const startListening = () => {
+  if (!recognition) {
+    alert("Speech Recognition not supported in this browser.");
+    return;
+  }
+
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recognition.onstart = () => setListening(true);
+
+  recognition.onend = () => setListening(false);
+
+  recognition.onresult = (event: SpeechRecognitionEvent) => {
+    const transcript = event.results[0][0].transcript;
+    setInputValue(prev => (prev ? prev + ' ' + transcript : transcript));
+    setIsTyping(true);
+  };
+
+  recognition.onerror = (event: any) => {
+    console.error("Speech recognition error:", event.error);
+    setListening(false);
+  };
+
+  recognition.start();
+};
 
   return (
     <div className="relative w-full">
@@ -105,12 +153,27 @@ const Input: React.FC = () => {
             {/* Bottom bar with icons */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/30 transition-all duration-200 group">
-                  <Paperclip className="w-4 h-4 text-gray-400 group-hover:text-sky-400" />
-                </button>
-                <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/30 transition-all duration-200 group">
-                  <Mic className="w-4 h-4 text-gray-400 group-hover:text-sky-400" />
-                </button>
+<label
+  htmlFor="file-upload"
+  className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/30 transition-all duration-200 group cursor-pointer"
+>
+  <Paperclip className="w-4 h-4 text-gray-400 group-hover:text-sky-400" />
+</label>
+<input
+  id="file-upload"
+  type="file"
+  accept=".txt"
+  className="hidden"
+  onChange={handleFileUpload}
+/>
+<button
+  onClick={startListening}
+  className={`p-2 rounded-lg ${
+    listening ? 'bg-sky-600' : 'bg-white/5 hover:bg-white/10'
+  } border border-white/10 hover:border-sky-400/30 transition-all duration-200 group`}
+>
+  <Mic className="w-4 h-4 text-gray-400 group-hover:text-sky-400" />
+</button>
               </div>
             </div>
           </div>
