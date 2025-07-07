@@ -8,7 +8,6 @@ export default function ChatPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  // ✅ Fix hydration mismatch by generating particles on client only
   const [particles, setParticles] = useState<
     { left: string; top: string; duration: string }[]
   >([]);
@@ -25,7 +24,6 @@ export default function ChatPage() {
 
     window.addEventListener('mousemove', handleMouseMove);
 
-    // ✅ Generate particles after mount only (no mismatch with SSR)
     const generated = Array.from({ length: 6 }).map(() => ({
       left: `${Math.random() * 100}%`,
       top: `${Math.random() * 100}%`,
@@ -51,17 +49,12 @@ export default function ChatPage() {
         />
       </Head>
 
-      <div
-        className="min-h-screen w-full fixed inset-0 text-white font-proxima overflow-hidden"
-        style={{
-          background: `
-            radial-gradient(ellipse at top left, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
-            radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-            radial-gradient(ellipse at bottom, rgba(14, 165, 233, 0.08) 0%, transparent 60%),
-            linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0a0a0a 100%)
-          `,
-        }}
-      >
+    <div 
+      className="min-h-screen w-full fixed inset-0 text-white font-proxima overflow-hidden flex items-center justify-center p-4"
+      style={{
+        background: '#000000',
+      }}
+    >
         {/* ✅ Interactive cursor glow */}
         <div
           className="fixed pointer-events-none w-96 h-96 rounded-full opacity-20 blur-3xl transition-all duration-500"
@@ -99,7 +92,7 @@ export default function ChatPage() {
                 : 'opacity-0 translate-y-8'
             }`}
           >
-            <h1 className="text-4xl lg:text-5xl font-bold leading-tight bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent">
+            <h1 className="text-3xl lg:text-5xl font-bold leading-tight bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent">
               What do you want to build?
             </h1>
             <p
