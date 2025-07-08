@@ -1,13 +1,9 @@
 "use client";
 import React from "react";
-import RoadmapDisplay, {
-  generateSampleRoadmap,
-} from "../components/RoadmapDisplay";
+import RoadmapDisplay from "../components/RoadmapDisplay";
 
 const TestPage = () => {
-  // Generate the sample roadmap data
-  const sampleRoadmap = generateSampleRoadmap();
-
+ 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-8">
       <div className="max-w-4xl mx-auto">
@@ -43,10 +39,6 @@ const TestPage = () => {
               Test Error Display
             </button>
           </div>
-        </div>
-
-        <div className="mb-10">
-          <RoadmapDisplay roadmap={sampleRoadmap} />
         </div>
 
         <div className="mt-12 mb-10">

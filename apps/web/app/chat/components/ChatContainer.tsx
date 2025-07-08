@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import ChatInput from "./ChatInput";
-import RoadmapDisplay, { generateSampleRoadmap } from "./RoadmapDisplay";
+import RoadmapDisplay from "./RoadmapDisplay";
 import SuggestionPill from "./SuggestionPill";
 
 // Define types for the API response
@@ -70,35 +70,46 @@ const ChatContainer: React.FC = () => {
   ];
 
   // Handle sending messages to the API
-  const handleSendMessage = async (message: string) => {
-    setLoading(true);
-    setRoadmap(null);
+const handleSendMessage = async (message: string) => {
+  setLoading(true);
+  setRoadmap(null);
 
-    try {
-      const res = await fetch("http://localhost:5000/chat", {
+  try {
+    const res = await fetch("http://localhost:5000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userMessage: message }),
+    });
+
+    const data = await res.json();
+
+    // Save previous roadmap if it exists
+    if (roadmap && typeof roadmap !== "string") {
+      await fetch("http://localhost:5000/roadmap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userMessage: message }),
+        body: JSON.stringify({
+          userId: "2530d4b2-e8e9-4e0a-a2b8-7ba0176f112f", // hardcode or pull from Supabase client for now
+          title: message,
+          goal: message,
+          roadmap,
+        }),
       });
-
-      const data = await res.json();
-      console.log("RESPONSE:", data);
-
-      // Process the roadmap data
-      if (data.roadmap) {
-        setRoadmap(data.roadmap);
-      } else {
-        setRoadmap("No roadmap received. Please try a different query.");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      setRoadmap(
-        "Something went wrong. Please check your connection and try again."
-      );
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // Set the new roadmap
+    if (data.roadmap) {
+      setRoadmap(data.roadmap);
+    } else {
+      setRoadmap("⚠️ No roadmap received. Try another query.");
+    }
+  } catch (err) {
+    console.error("❌ Error:", err);
+    setRoadmap("❌ Failed to fetch roadmap. Try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle clicking on a suggestion pill
   const handleSuggestionClick = (suggestion: string) => {

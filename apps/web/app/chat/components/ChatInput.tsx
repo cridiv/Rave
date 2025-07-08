@@ -3,7 +3,13 @@
 import React, { useState, useRef } from 'react';
 import { Paperclip, Sparkles, ArrowRight, Mic } from 'lucide-react';
 
-const ChatInput: React.FC = () => {
+
+interface ChatInputProps {
+  onSendMessage: (message: string) => Promise<void>;
+  isLoading: boolean;
+}
+
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
