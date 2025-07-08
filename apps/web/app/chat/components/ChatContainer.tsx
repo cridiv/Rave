@@ -69,10 +69,9 @@ const ChatContainer: React.FC = () => {
     "Master React and Next.js",
   ];
 
-  // Handle sending messages to the API
+// Handle sending messages to the API
 const handleSendMessage = async (message: string) => {
   setLoading(true);
-  setRoadmap(null);
 
   try {
     const res = await fetch("http://localhost:5000/chat", {
@@ -82,6 +81,10 @@ const handleSendMessage = async (message: string) => {
     });
 
     const data = await res.json();
+    console.log("Full API response:", data);
+    console.log("Type of response:", typeof data);
+    console.log("Is array?", Array.isArray(data));
+    console.log("Data.roadmap:", data.roadmap);
 
     // Save previous roadmap if it exists
     if (roadmap && typeof roadmap !== "string") {
@@ -89,7 +92,7 @@ const handleSendMessage = async (message: string) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: "2530d4b2-e8e9-4e0a-a2b8-7ba0176f112f", // hardcode or pull from Supabase client for now
+          userId: "2530d4b2-e8e9-4e0a-a2b8-7ba0176f112f",
           title: message,
           goal: message,
           roadmap,
@@ -97,12 +100,17 @@ const handleSendMessage = async (message: string) => {
       });
     }
 
-    // Set the new roadmap
-    if (data.roadmap) {
-      setRoadmap(data.roadmap);
-    } else {
-      setRoadmap("⚠️ No roadmap received. Try another query.");
-    }
+    // Set the new roadmap - use data directly instead of data.roadmap
+if (data.roadmap) {
+  console.log("Setting roadmap to:", data.roadmap);
+  setRoadmap(data.roadmap);
+} else if (data.error) {
+  console.log("API returned error:", data.error);
+  setRoadmap(data.error);
+} else {
+  console.log("No roadmap or error in response");
+  setRoadmap("⚠️ No roadmap received. Try another query.");
+}
   } catch (err) {
     console.error("❌ Error:", err);
     setRoadmap("❌ Failed to fetch roadmap. Try again.");

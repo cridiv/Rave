@@ -3,7 +3,6 @@
 import React, { useState, useRef } from 'react';
 import { Paperclip, Sparkles, ArrowRight, Mic } from 'lucide-react';
 
-
 interface ChatInputProps {
   onSendMessage: (message: string) => Promise<void>;
   isLoading: boolean;
@@ -13,8 +12,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [roadmap, setRoadmap] = useState('');
   const [listening, setListening] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -32,29 +29,32 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
   const handleBlur = () => setIsFocused(false);
 
   const handleSend = async () => {
-    if (!inputValue.trim()) return;
-    setLoading(true);
-    setRoadmap('');
+    if (!inputValue.trim() || isLoading) return;
+    
+    const messageToSend = inputValue.trim();
+    console.log("📤 ChatInput sending message:", messageToSend);
+    
+    // Clear input immediately
+    setInputValue('');
+    setIsTyping(false);
+    
+    // Reset textarea height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+    
+    // Use the parent's onSendMessage function
     try {
-      const res = await fetch('http://localhost:5000/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userMessage: inputValue }),
-      });
+      await onSendMessage(messageToSend);
+    } catch (error) {
+      console.error("❌ Error in ChatInput handleSend:", error);
+    }
+  };
 
-      if (!res.ok) {
-        if (res.status === 404) throw new Error('🚫 Backend route not found (404)');
-        if (res.status === 500) throw new Error('💥 Server error (500)');
-        throw new Error(`⚠️ Error: ${res.statusText} (${res.status})`);
-      }
-
-      const data = await res.json();
-      setRoadmap(data.roadmap || '⚠️ No roadmap received');
-    } catch (err: any) {
-      console.error('❌ Fetch error:', err.message);
-      setRoadmap(err.message || '❌ Something went wrong. Try again.');
-    } finally {
-      setLoading(false);
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
@@ -134,7 +134,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
           >
             <button
               onClick={handleSend}
-              disabled={loading}
+              disabled={isLoading}
               className="cursor-pointer relative p-3 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-sky-500/30 hover:-translate-y-0.5 group overflow-hidden disabled:opacity-50"
             >
               <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-0.5 transition-transform duration-200" />
@@ -150,6 +150,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
                 onChange={handleInputChange}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
+                onKeyPress={handleKeyPress}
                 placeholder="Describe your learning goal or ask anything..."
                 className="w-full bg-transparent text-gray-100 placeholder-gray-400 resize-none outline-none text-base leading-relaxed min-h-[80px] max-h-[200px] transition-all duration-300"
                 rows={4}
@@ -175,12 +176,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
                 {listening && (
                   <p className="text-xs text-sky-400 mt-2 animate-pulse">Listening...</p>
                 )}
-                {loading && (
-              <div className="text-sm text-sky-400 flex items-center gap-2">
-                <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse"></div>
-                Generating roadmap...
-              </div>
-            )}
+                {isLoading && (
+                  <div className="text-sm text-sky-400 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse"></div>
+                    Generating roadmap...
+                  </div>
+                )}
               </div>
             </div>
           </div>
