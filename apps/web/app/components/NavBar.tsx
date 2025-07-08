@@ -116,7 +116,6 @@ const NavBar = () => {
         </Link>
       </div>
 
-      {/* Full-screen mobile menu with animation */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div

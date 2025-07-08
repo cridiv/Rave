@@ -1,21 +1,22 @@
 "use client";
 import React from "react";
+import { supabase } from '@/lib/supabase';
 import { motion } from "framer-motion";
 import Link from "next/link";
 
 const SignIn = () => {
-  const HandleSignInWithGoogle = () => {
-    // Logic for signing in with Google
-    console.log("Sign in with Google clicked");
-    // You can implement the actual sign-in logic here
-  };
+  const handleOAuthLogin = async (provider: 'google' | 'github') => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `http://localhost:3000/chat`,
+      },
+    });
 
-  const HandleSignInWithGitHub = () => {
-    // Logic for signing in with GitHub
-    console.log("Sign in with GitHub clicked");
-    // You can implement the actual sign-in logic here
+    if (error) {
+      console.error('OAuth error:', error.message);
+    }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-black/90">
       {/* Background glow effect */}
@@ -53,7 +54,7 @@ const SignIn = () => {
           {/* Sign-in buttons */}
           <div className="space-y-4 pb-5">
             <button
-              onClick={HandleSignInWithGoogle}
+              onClick={() => handleOAuthLogin('google')}
               className="w-full bg-white/10 hover:bg-white/15 text-white font-medium py-3 px-4 rounded-xl border border-white/10 transition duration-300 flex items-center justify-center space-x-2 hover:shadow-lg hover:shadow-white/5"
             >
               <svg
@@ -84,7 +85,7 @@ const SignIn = () => {
 
             {/* <button className="w-full bg-white/10 hover:bg-white/15 text-white font-medium py-3 px-4 rounded-xl border border-white/10 transition duration-300 flex items-center justify-center space-x-2 hover:shadow-lg hover:shadow-white/5"> */}
             <button
-              onClick={HandleSignInWithGitHub}
+              onClick={() => handleOAuthLogin('github')}
               className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-3 px-4 rounded-xl transition duration-300 flex items-center justify-center space-x-2 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/30"
             >
               <svg
