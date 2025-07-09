@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { X, Mail, Calendar, User, Loader2 } from "lucide-react";
+import { X, Mail, Calendar } from "lucide-react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type AccountModalProps = {
@@ -20,16 +20,13 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [avatarError, setAvatarError] = useState(false);
 
-  // Generate avatar URL using DiceBear API
   const generateAvatarUrl = (name: string) => {
-    // Clean the name to use as seed
-    const seed = encodeURIComponent(name.toLowerCase().replace(/\s+/g, ''));
-    // Using 'avataaars' style - you can also try 'bottts', 'identicon', 'initials', 'personas', etc.
+    const seed = encodeURIComponent(name.toLowerCase().replace(/\s+/g, ""));
     return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=0ea5e9,0284c7,0369a1&radius=50`;
   };
 
-  // Fetch user data from Supabase
   useEffect(() => {
     const fetchUserData = async () => {
       if (!isOpen) return;
@@ -41,15 +38,9 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
         const supabase = createClientComponentClient();
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-        if (authError) {
-          throw new Error(authError.message);
-        }
+        if (authError) throw new Error(authError.message);
+        if (!user) throw new Error("No user found");
 
-        if (!user) {
-          throw new Error("No user found");
-        }
-
-        // Format the user data
         const userData: UserInfo = {
           name: user.user_metadata?.full_name || user.user_metadata?.name || "User",
           email: user.email || "No email provided",
@@ -69,23 +60,18 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
     fetchUserData();
   }, [isOpen]);
 
-  // Helper function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
-  // Close modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
@@ -99,7 +85,6 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-  // Handle escape key press
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -124,7 +109,7 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
       .map((word) => word[0])
       .join("")
       .toUpperCase()
-      .slice(0, 2); // Limit to 2 characters
+      .slice(0, 2);
   };
 
   return (
@@ -146,7 +131,23 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-sky-400 mb-4" />
+            <span className="animate-spin text-sky-400 mb-4">
+              <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
+              </svg>
+            </span>
             <p className="text-gray-400 text-sm">Loading user data...</p>
           </div>
         ) : error ? (
@@ -157,49 +158,28 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
             <p className="text-red-400 text-sm text-center mb-4">
               Failed to load user data
             </p>
-            <p className="text-gray-500 text-xs text-center">
-              {error}
-            </p>
+            <p className="text-gray-500 text-xs text-center">{error}</p>
           </div>
         ) : userInfo ? (
           <>
             <div className="flex flex-col items-center mb-6">
               <div className="relative">
-                {/* Try user's profile image first, then fallback to generated avatar */}
-                {userInfo.profileImageUrl ? (
+                {!avatarError ? (
                   <img
-                    src={userInfo.profileImageUrl}
+                    src={
+                      userInfo.profileImageUrl
+                        ? userInfo.profileImageUrl
+                        : generateAvatarUrl(userInfo.name)
+                    }
                     alt={userInfo.name}
                     className="w-24 h-24 rounded-full object-cover border-2 border-sky-500/30"
-                    onError={(e) => {
-                      // Fallback to generated avatar if user image fails
-                      const target = e.target as HTMLImageElement;
-                      target.src = generateAvatarUrl(userInfo.name);
-                      target.onerror = () => {
-                        // Final fallback to initials if avatar generation fails
-                        target.style.display = 'none';
-                        target.nextElementSibling?.classList.remove('hidden');
-                      };
-                    }}
+                    onError={() => setAvatarError(true)}
                   />
                 ) : (
-                  <img
-                    src={generateAvatarUrl(userInfo.name)}
-                    alt={userInfo.name}
-                    className="w-24 h-24 rounded-full object-cover border-2 border-sky-500/30"
-                    onError={(e) => {
-                      // Fallback to initials if avatar generation fails
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      target.nextElementSibling?.classList.remove('hidden');
-                    }}
-                  />
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-sky-600 to-indigo-700 flex items-center justify-center text-white text-2xl font-semibold border-2 border-sky-500/30">
+                    {getInitials(userInfo.name)}
+                  </div>
                 )}
-                
-                {/* Initials fallback - only shown if both profile image and avatar fail */}
-                <div className="hidden w-24 h-24 rounded-full bg-gradient-to-br from-sky-600 to-indigo-700 flex items-center justify-center text-white text-2xl font-semibold border-2 border-sky-500/30">
-                  {getInitials(userInfo.name)}
-                </div>
               </div>
 
               <div className="mt-4 text-center">
@@ -214,7 +194,9 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
                 <Mail size={18} className="text-sky-400" />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs text-gray-400">Email</p>
-                  <p className="text-sm text-white truncate">{userInfo.email}</p>
+                  <p className="text-sm text-white truncate">
+                    {userInfo.email}
+                  </p>
                 </div>
               </div>
 
