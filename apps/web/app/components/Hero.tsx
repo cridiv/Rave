@@ -23,7 +23,7 @@ const Hero = () => {
         <div className="flex flex-col justify-center space-y-6">
           <div className="text-4xl lg:text-5xl font-bold leading-tight">
             Unlock Personalized AI Roadmaps Journeys with{" "}
-            <span className="font-bold border-none bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text hover:from-sky-400 hover:to-sky-200 transition-all duration-300">
+            <span className="font-bold border-none bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text hover:from-sky-500 hover:to-sky-200 transition-all duration-300">
               Rave
             </span>
           </div>

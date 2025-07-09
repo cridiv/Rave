@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -70,8 +71,9 @@ const NavBar = () => {
         </div>
         <Link
           href="/"
-          className="btn btn-ghost text-xl font-bold border-none bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text hover:from-sky-400 hover:to-sky-200 transition-all duration-300"
+          className="btn btn-ghost text-xl font-bold border-none bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text hover:from-sky-500 hover:to-sky-200 transition-all duration-300"
         >
+          <Image src="/rave-sm.svg" alt="Rave logo" width={24} height={24} />
           Rave
         </Link>
       </div>
@@ -109,7 +111,7 @@ const NavBar = () => {
       </div>
 
       <div className="navbar-end relative z-10">
-         <Link href="/signin">
+        <Link href="/signin">
           <button className="btn bg-sky-500 text-white px-6 py-3 rounded-full shadow-lg shadow-sky-500/50 border-none hover:shadow-sky-500/75 hover:-translate-y-1 transition-all duration-300">
             Get Started
           </button>
