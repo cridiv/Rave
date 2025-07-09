@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import ChatInput from "./ChatInput";
 import RoadmapDisplay from "./RoadmapDisplay";
 import SuggestionPill from "./SuggestionPill";
+import { useRouter } from "next/navigation";
 
 // Define types for the API response
 type Resource = {
@@ -33,31 +34,37 @@ type ChatContainerProps = {
 
 const ChatContainer: React.FC<ChatContainerProps> = ({ userId, roadmapId }) => {
   const [loading, setLoading] = useState(false);
-  // For testing without API: Uncomment to use sample data
-  // const [roadmap, setRoadmap] = useState<RoadmapData>(generateSampleRoadmap());
   const [roadmap, setRoadmap] = useState<RoadmapData>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [particles, setParticles] = useState<
     { left: string; top: string; duration: string }[]
   >([]);
+  const [currentMessage, setCurrentMessage] = useState<string>("");
+  const router = useRouter();
 
+  // Load existing roadmap if roadmapId is provided
   useEffect(() => {
-  const fetchRoadmap = async () => {
-    if (!roadmapId) return;
+    const fetchRoadmap = async () => {
+      if (!roadmapId) return;
 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/roadmap/${roadmapId}`);
-      const data = await res.json();
-      setRoadmap(data); // use your display logic here
-    } catch (err) {
-      console.error("❌ Error loading roadmap:", err);
-      setRoadmap("⚠️ Couldn't load roadmap");
-    }
-  };
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/roadmap/${roadmapId}?userId=${userId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setRoadmap(data.roadmap);
+        } else {
+          console.error("❌ Error loading roadmap:", res.statusText);
+          setRoadmap("⚠️ Couldn't load roadmap");
+        }
+      } catch (err) {
+        console.error("❌ Error loading roadmap:", err);
+        setRoadmap("⚠️ Couldn't load roadmap");
+      }
+    };
 
-  fetchRoadmap();
-}, [roadmapId]);
+    fetchRoadmap();
+  }, [roadmapId, userId]);
 
   // Handle window load and mouse movement effects
   useEffect(() => {
@@ -91,55 +98,65 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userId, roadmapId }) => {
     "Master React and Next.js",
   ];
 
-// Handle sending messages to the API
-const handleSendMessage = async (message: string) => {
-  setLoading(true);
+  // Handle sending messages to the API
+  const handleSendMessage = async (message: string) => {
+    setLoading(true);
+    setCurrentMessage(message);
 
-  try {
-    const res = await fetch("http://localhost:5000/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userMessage: message }),
-    });
-
-    const data = await res.json();
-    console.log("Full API response:", data);
-    console.log("Type of response:", typeof data);
-    console.log("Is array?", Array.isArray(data));
-    console.log("Data.roadmap:", data.roadmap);
-
-    // Save previous roadmap if it exists
-    if (roadmap && typeof roadmap !== "string") {
-      await fetch("http://localhost:5000/roadmap", {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId,
-          title: message,
-          goal: message,
-          roadmap,
-        }),
+        body: JSON.stringify({ userMessage: message }),
       });
-    }
 
-    // Set the new roadmap - use data directly instead of data.roadmap
-if (data.roadmap) {
-  console.log("Setting roadmap to:", data.roadmap);
-  setRoadmap(data.roadmap);
-} else if (data.error) {
-  console.log("API returned error:", data.error);
-  setRoadmap(data.error);
-} else {
-  console.log("No roadmap or error in response");
-  setRoadmap("⚠️ No roadmap received. Try another query.");
-}
-  } catch (err) {
-    console.error("❌ Error:", err);
-    setRoadmap("❌ Failed to fetch roadmap. Try again.");
-  } finally {
-    setLoading(false);
-  }
-};
+      const data = await res.json();
+      console.log("Full API response:", data);
+
+      // Set the new roadmap
+      if (data.roadmap) {
+        console.log("Setting roadmap to:", data.roadmap);
+        setRoadmap(data.roadmap);
+        
+        // Save the NEW roadmap to history
+        try {
+          const saveRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/roadmap`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId,
+              title: message,
+              goal: message,
+              roadmap: data.roadmap,
+            }),
+          });
+
+          if (saveRes.ok) {
+            const savedRoadmap = await saveRes.json();
+            console.log("✅ Roadmap saved:", savedRoadmap);
+            
+            // Redirect to the new roadmap page
+            router.push(`/roadmap/${savedRoadmap.id}`);
+          } else {
+            console.error("❌ Failed to save roadmap:", saveRes.statusText);
+          }
+        } catch (saveErr) {
+          console.error("❌ Error saving roadmap:", saveErr);
+        }
+      } else if (data.error) {
+        console.log("API returned error:", data.error);
+        setRoadmap(data.error);
+      } else {
+        console.log("No roadmap or error in response");
+        setRoadmap("⚠️ No roadmap received. Try another query.");
+      }
+    } catch (err) {
+      console.error("❌ Error:", err);
+      setRoadmap("❌ Failed to fetch roadmap. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle clicking on a suggestion pill
   const handleSuggestionClick = (suggestion: string) => {
@@ -255,16 +272,6 @@ if (data.roadmap) {
               <div className="w-2 h-2 bg-sky-400 rounded-full animate-pulse" />
               <span>Start typing to begin your personalized journey</span>
             </div>
-
-            {/* Dev testing link - you can remove this in production */}
-            <a
-              href="/chat/test"
-              className="mt-4 text-[10px] text-sky-700 hover:text-sky-500 underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Open Test Page
-            </a>
           </div>
         )}
 

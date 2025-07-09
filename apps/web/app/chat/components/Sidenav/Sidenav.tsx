@@ -8,6 +8,7 @@ import {
   User,
   Settings,
   Menu,
+  Clock,
 } from "lucide-react";
 import SignoutModal from "./SignoutModal";
 import AccountModal from "./AccountModal";
@@ -17,16 +18,16 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type SidenavProps = {
   initialChatHistory?: { id: string; title: string; date: string }[];
+  currentRoadmapId?: string;
 };
 
-
-const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [] }) => {
+const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadmapId }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [showSignoutModal, setShowSignoutModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [chatHistory, setChatHistory] = useState<
+  const [roadmapHistory, setRoadmapHistory] = useState<
     { id: string; title: string; created_at: string; user_id: string }[]
   >([]);
   const [userId, setUserId] = useState<string>("");
@@ -49,7 +50,7 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [] }) => {
 
       setUserId(user.id);
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       if (!apiUrl) {
         console.error("❌ Missing NEXT_PUBLIC_API_URL in .env.local");
         setIsLoading(false);
@@ -58,8 +59,12 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [] }) => {
 
       try {
         const res = await fetch(`${apiUrl}/roadmap/user/${user.id}`);
-        const roadmaps = await res.json();
-        setChatHistory(roadmaps);
+        if (res.ok) {
+          const roadmaps = await res.json();
+          setRoadmapHistory(roadmaps);
+        } else {
+          console.error("❌ Failed to fetch roadmaps:", res.statusText);
+        }
       } catch (err) {
         console.error("❌ Failed to fetch roadmaps:", err);
       } finally {
@@ -94,6 +99,25 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [] }) => {
   const toggleMobileSidenav = () => {
     setIsMobileOpen(!isMobileOpen);
     if (!isMobileOpen) setIsExpanded(true);
+  };
+
+  // Helper function to format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) return "Today";
+    if (diffDays === 2) return "Yesterday";
+    if (diffDays <= 7) return `${diffDays - 1} days ago`;
+    return date.toLocaleDateString();
+  };
+
+  // Helper function to truncate title
+  const truncateTitle = (title: string, maxLength: number = 30) => {
+    if (title.length <= maxLength) return title;
+    return title.substring(0, maxLength) + "...";
   };
 
   return (
@@ -137,34 +161,68 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [] }) => {
             </button>
           )}
 
-          {/* 📜 Roadmap/Chat List */}
-          <div className="flex-1 overflow-y-auto pt-4">
+          {/* 🆕 New Roadmap Button */}
+          <div className="px-3 py-2">
+            <Link
+              href="/chat"
+              className={`flex items-center rounded-lg px-3 py-2 bg-sky-600/20 hover:bg-sky-600/30 
+                border border-sky-500/30 transition-all duration-200 
+                ${isExpanded ? "justify-start" : "justify-center"}`}
+            >
+              <MessageSquare size={18} className="text-sky-400" />
+              {isExpanded && (
+                <span className="ml-3 text-sm text-sky-300 font-medium">
+                  New Roadmap
+                </span>
+              )}
+            </Link>
+          </div>
+
+          {/* 📜 Roadmap History */}
+          <div className="flex-1 overflow-y-auto">
             <div className={`px-3 py-2 ${isExpanded ? "block" : "hidden"}`}>
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Chat History
+                Roadmap History
               </h3>
             </div>
 
             {!isExpanded && (
               <div className="flex justify-center py-2">
-                <MessageSquare size={20} className="text-sky-400" />
+                <Clock size={20} className="text-gray-500" />
               </div>
             )}
 
             <div className="space-y-1 px-2">
               {isLoading ? (
-                <div className="text-gray-400 text-xs italic px-3">Loading...</div>
-              ) : chatHistory.length > 0 ? (
-                chatHistory.map((chat) => (
+                <div className={`text-gray-400 text-xs italic px-3 ${isExpanded ? "block" : "hidden"}`}>
+                  Loading...
+                </div>
+              ) : roadmapHistory.length > 0 ? (
+                roadmapHistory.map((roadmap) => (
                   <Link
-                    key={chat.id}
-                    href={`/chat?roadmapId=${chat.id}`}
+                    key={roadmap.id}
+                    href={`/roadmap/${roadmap.id}`}
                     className={`flex items-center rounded-md px-2 py-2 w-full text-left
-                      text-white hover:bg-sky-800/20 transition-colors
+                      transition-all duration-200 group
+                      ${currentRoadmapId === roadmap.id 
+                        ? "bg-sky-800/30 text-sky-300 border border-sky-500/30" 
+                        : "text-gray-300 hover:bg-sky-800/20 hover:text-white"
+                      }
                       ${isExpanded ? "justify-start" : "justify-center"}`}
                   >
+                    <MessageSquare 
+                      size={16} 
+                      className={`${currentRoadmapId === roadmap.id ? "text-sky-400" : "text-gray-500 group-hover:text-sky-400"}`}
+                    />
                     {isExpanded && (
-                      <span className="ml-3 truncate text-sm">{chat.title}</span>
+                      <div className="ml-3 flex-1 min-w-0">
+                        <div className="text-sm font-medium truncate">
+                          {truncateTitle(roadmap.title)}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          {formatDate(roadmap.created_at)}
+                        </div>
+                      </div>
                     )}
                   </Link>
                 ))
