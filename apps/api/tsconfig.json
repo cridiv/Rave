@@ -4,7 +4,8 @@
     "module": "commonjs",
     "target": "ES2023",
     "moduleResolution": "node",
-
+    "outDir": "./dist",
+    
     "sourceMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -17,11 +18,12 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    
+    "paths": {
+      "@rave/utils": ["../../packages/utils/src/index.ts"],
+      "@rave/types": ["../../packages/types/src/index.ts"]
+    }
   },
-  "include": ["src"],
-  "compilerOptions.paths": {
-    "@rave/utils": ["../../packages/utils/src/index.ts"],
-    "@rave/types": ["../../packages/types/src/index.ts"]
-  }
+  "include": ["src"]
 }
