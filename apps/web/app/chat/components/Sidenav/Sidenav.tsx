@@ -12,67 +12,93 @@ import {
 import SignoutModal from "./SignoutModal";
 import AccountModal from "./AccountModal";
 import SettingsModal from "./SettingsModal";
+import Link from "next/link";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type SidenavProps = {
-  chatHistory?: { id: string; title: string; date: string }[];
+  initialChatHistory?: { id: string; title: string; date: string }[];
 };
 
-const Sidenav: React.FC<SidenavProps> = ({
-  chatHistory = [], // Default to empty array if not provided
-}) => {
+
+const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [] }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [showSignoutModal, setShowSignoutModal] = useState(false);
   const [showAccountModal, setShowAccountModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [chatHistory, setChatHistory] = useState<
+    { id: string; title: string; created_at: string; user_id: string }[]
+  >([]);
+  const [userId, setUserId] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Check if the screen is mobile on mount
+  // 🚀 Fetch user + roadmaps on mount
   useEffect(() => {
-    const checkMobile = () => {
-      if (window.innerWidth >= 1024) {
-        // For desktop, close mobile view if it was open
-        setIsMobileOpen(false);
+    const fetchRoadmaps = async () => {
+      const supabase = createClientComponentClient();
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+
+      if (!user || error) {
+        console.error("❌ No user found.");
+        setIsLoading(false);
+        return;
+      }
+
+      setUserId(user.id);
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl) {
+        console.error("❌ Missing NEXT_PUBLIC_API_URL in .env.local");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${apiUrl}/roadmap/user/${user.id}`);
+        const roadmaps = await res.json();
+        setChatHistory(roadmaps);
+      } catch (err) {
+        console.error("❌ Failed to fetch roadmaps:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    // Initial check
-    checkMobile();
+    fetchRoadmaps();
+  }, []);
 
-    // Add resize listener
+  // 🔄 Handle mobile screen resizing
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileOpen(false);
+      }
+    };
+    checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const handleMouseEnter = useCallback(() => {
-    // Only auto-expand on desktop
-    if (window.innerWidth >= 1024) {
-      setIsExpanded(true);
-    }
+    if (window.innerWidth >= 1024) setIsExpanded(true);
   }, []);
 
   const handleMouseLeave = useCallback(() => {
-    // Only auto-collapse on desktop
-    if (window.innerWidth >= 1024) {
-      setIsExpanded(false);
-    }
+    if (window.innerWidth >= 1024) setIsExpanded(false);
   }, []);
 
-  const toggleExpanded = () => {
-    setIsExpanded(!isExpanded);
-  };
-
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
   const toggleMobileSidenav = () => {
     setIsMobileOpen(!isMobileOpen);
-    // Always expand when opening on mobile
-    if (!isMobileOpen) {
-      setIsExpanded(true);
-    }
+    if (!isMobileOpen) setIsExpanded(true);
   };
 
-  // Render the side navigation
   return (
     <>
-      {/* Mobile hamburger menu */}
+      {/* ☰ Mobile Menu Button */}
       <button
         onClick={toggleMobileSidenav}
         className="lg:hidden fixed top-4 left-4 z-50 p-3 rounded-full bg-gray-800/50 backdrop-blur-md text-white hover:bg-gray-700/60 transition-colors"
@@ -81,37 +107,27 @@ const Sidenav: React.FC<SidenavProps> = ({
         <Menu size={20} />
       </button>
 
-      {/* Sidenav container */}
+      {/* 📚 Sidebar */}
       <div
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         className={`fixed rounded-tr-3xl top-0 left-0 h-full z-40 transition-all duration-300 
           ${isExpanded ? "w-64" : "w-16"} 
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          bg-gradient-to-r 
-        from-white/5 
-        via-white/5 
-        to-white/5 
-        backdrop-blur-xl 
-        shadow-2xl 
-        shadow-black/10 border-r border-sky-900/30
-        ${isMobileOpen ? "w-3/4 sm:w-64" : ""}`}
+          bg-gradient-to-r from-white/5 via-white/5 to-white/5 
+          backdrop-blur-xl shadow-2xl shadow-black/10 border-r border-sky-900/30
+          ${isMobileOpen ? "w-3/4 sm:w-64" : ""}`}
       >
         <div className="flex flex-col h-full">
-          {/* Toggle button - only on desktop */}
+          {/* Expand/Collapse Button */}
           <button
             onClick={toggleExpanded}
             className="hidden lg:flex self-end p-2 m-2 rounded-full hover:bg-sky-800/20 text-sky-400"
-            aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
           >
-            {isExpanded ? (
-              <ChevronLeft size={16} />
-            ) : (
-              <ChevronRight size={16} />
-            )}
+            {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
           </button>
 
-          {/* Close button - only on mobile */}
+          {/* Close Button on Mobile */}
           {isMobileOpen && (
             <button
               onClick={toggleMobileSidenav}
@@ -121,7 +137,7 @@ const Sidenav: React.FC<SidenavProps> = ({
             </button>
           )}
 
-          {/* Chat history section */}
+          {/* 📜 Roadmap/Chat List */}
           <div className="flex-1 overflow-y-auto pt-4">
             <div className={`px-3 py-2 ${isExpanded ? "block" : "hidden"}`}>
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -136,32 +152,35 @@ const Sidenav: React.FC<SidenavProps> = ({
             )}
 
             <div className="space-y-1 px-2">
-              {chatHistory.length > 0 ? (
+              {isLoading ? (
+                <div className="text-gray-400 text-xs italic px-3">Loading...</div>
+              ) : chatHistory.length > 0 ? (
                 chatHistory.map((chat) => (
-                  <button
+                  <Link
                     key={chat.id}
+                    href={`/chat?roadmapId=${chat.id}`}
                     className={`flex items-center rounded-md px-2 py-2 w-full text-left
                       text-white hover:bg-sky-800/20 transition-colors
                       ${isExpanded ? "justify-start" : "justify-center"}`}
                   >
                     {isExpanded && (
-                      <span className="ml-3 truncate text-sm">
-                        {chat.title}
-                      </span>
+                      <span className="ml-3 truncate text-sm">{chat.title}</span>
                     )}
-                  </button>
+                  </Link>
                 ))
               ) : (
                 <div
-                  className={`px-2 py-2 text-gray-500 text-xs italic ${isExpanded ? "block" : "hidden"}`}
+                  className={`px-2 py-2 text-gray-500 text-xs italic ${
+                    isExpanded ? "block" : "hidden"
+                  }`}
                 >
-                  No chat history yet
+                  No roadmaps yet
                 </div>
               )}
             </div>
           </div>
 
-          {/* Actions section */}
+          {/* ⚙️ User Actions */}
           <div className="p-2 border-t border-sky-900/30">
             <button
               onClick={() => setShowAccountModal(true)}
@@ -196,13 +215,12 @@ const Sidenav: React.FC<SidenavProps> = ({
         </div>
       </div>
 
-      {/* Modal components */}
+      {/* 💬 Modals */}
       {showSignoutModal && (
         <SignoutModal
           isOpen={showSignoutModal}
           onClose={() => setShowSignoutModal(false)}
           onSignout={() => {
-            // Handle signout logic here
             console.log("User signed out");
             setShowSignoutModal(false);
           }}
@@ -223,7 +241,7 @@ const Sidenav: React.FC<SidenavProps> = ({
         />
       )}
 
-      {/* Backdrop for mobile */}
+      {/* 🌓 Mobile backdrop */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"

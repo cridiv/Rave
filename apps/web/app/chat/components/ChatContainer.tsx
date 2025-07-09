@@ -26,7 +26,12 @@ type Stage = {
 
 type RoadmapData = Stage[] | string | null;
 
-const ChatContainer: React.FC = () => {
+type ChatContainerProps = {
+  userId: string;
+  roadmapId?: string | null;
+};
+
+const ChatContainer: React.FC<ChatContainerProps> = ({ userId, roadmapId }) => {
   const [loading, setLoading] = useState(false);
   // For testing without API: Uncomment to use sample data
   // const [roadmap, setRoadmap] = useState<RoadmapData>(generateSampleRoadmap());
@@ -36,6 +41,23 @@ const ChatContainer: React.FC = () => {
   const [particles, setParticles] = useState<
     { left: string; top: string; duration: string }[]
   >([]);
+
+  useEffect(() => {
+  const fetchRoadmap = async () => {
+    if (!roadmapId) return;
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/roadmap/${roadmapId}`);
+      const data = await res.json();
+      setRoadmap(data); // use your display logic here
+    } catch (err) {
+      console.error("❌ Error loading roadmap:", err);
+      setRoadmap("⚠️ Couldn't load roadmap");
+    }
+  };
+
+  fetchRoadmap();
+}, [roadmapId]);
 
   // Handle window load and mouse movement effects
   useEffect(() => {
@@ -92,7 +114,7 @@ const handleSendMessage = async (message: string) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: "2530d4b2-e8e9-4e0a-a2b8-7ba0176f112f",
+          userId,
           title: message,
           goal: message,
           roadmap,
