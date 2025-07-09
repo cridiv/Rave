@@ -5,6 +5,7 @@
     "target": "ES2023",
     "moduleResolution": "node",
     "outDir": "./dist",
+    "baseUrl": "../../",
     
     "sourceMap": true,
     "esModuleInterop": true,
@@ -21,9 +22,13 @@
     "noFallthroughCasesInSwitch": false,
     
     "paths": {
-      "@rave/utils": ["../../packages/utils/src/index.ts"],
-      "@rave/types": ["../../packages/types/src/index.ts"]
+      "@rave/utils": ["packages/utils/src/index.ts"],
+      "@rave/types": ["packages/types/src/index.ts"]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "../../packages/utils/src",
+    "../../packages/types/src"
+  ]
 }
