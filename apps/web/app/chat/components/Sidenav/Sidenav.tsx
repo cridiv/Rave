@@ -33,7 +33,6 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadm
   const [userId, setUserId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
-  // 🚀 Fetch user + roadmaps on mount
   useEffect(() => {
     const fetchRoadmaps = async () => {
       const supabase = createClientComponentClient();

@@ -1,32 +1,83 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import { X, Mail, Calendar } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { X, Mail, Calendar, User, Loader2 } from "lucide-react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 type AccountModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  userInfo?: {
-    name: string;
-    email: string;
-    joined: string;
-    profileImageUrl?: string;
-  };
 };
 
-// Default user info for demo purposes - in a real app, this would come from props
-const defaultUserInfo = {
-  name: "Jane Doe",
-  email: "jane.doe@example.com",
-  joined: "January 2023",
-  profileImageUrl: "",
+type UserInfo = {
+  name: string;
+  email: string;
+  joined: string;
+  profileImageUrl?: string;
 };
 
-const AccountModal: React.FC<AccountModalProps> = ({
-  isOpen,
-  onClose,
-  userInfo = defaultUserInfo, // Use default if not provided
-}) => {
+const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Generate avatar URL using DiceBear API
+  const generateAvatarUrl = (name: string) => {
+    // Clean the name to use as seed
+    const seed = encodeURIComponent(name.toLowerCase().replace(/\s+/g, ''));
+    // Using 'avataaars' style - you can also try 'bottts', 'identicon', 'initials', 'personas', etc.
+    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=0ea5e9,0284c7,0369a1&radius=50`;
+  };
+
+  // Fetch user data from Supabase
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!isOpen) return;
+
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const supabase = createClientComponentClient();
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+        if (authError) {
+          throw new Error(authError.message);
+        }
+
+        if (!user) {
+          throw new Error("No user found");
+        }
+
+        // Format the user data
+        const userData: UserInfo = {
+          name: user.user_metadata?.full_name || user.user_metadata?.name || "User",
+          email: user.email || "No email provided",
+          joined: formatDate(user.created_at),
+          profileImageUrl: user.user_metadata?.avatar_url || user.user_metadata?.picture,
+        };
+
+        setUserInfo(userData);
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError(err instanceof Error ? err.message : "Failed to load user data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [isOpen]);
+
+  // Helper function to format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
 
   // Close modal when clicking outside
   useEffect(() => {
@@ -67,11 +118,14 @@ const AccountModal: React.FC<AccountModalProps> = ({
 
   if (!isOpen) return null;
 
-  const initials = userInfo.name
-    .split(" ")
-    .map((name) => name[0])
-    .join("")
-    .toUpperCase();
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2); // Limit to 2 characters
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -90,43 +144,90 @@ const AccountModal: React.FC<AccountModalProps> = ({
           </button>
         </div>
 
-        <div className="flex flex-col items-center mb-6">
-          {userInfo.profileImageUrl ? (
-            <img
-              src={userInfo.profileImageUrl}
-              alt={userInfo.name}
-              className="w-24 h-24 rounded-full object-cover border-2 border-sky-500/30"
-            />
-          ) : (
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-sky-600 to-indigo-700 flex items-center justify-center text-white text-2xl font-semibold">
-              {initials}
-            </div>
-          )}
-
-          <div className="mt-4 text-center">
-            <h3 className="text-lg font-semibold text-white">
-              {userInfo.name}
-            </h3>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-sky-400 mb-4" />
+            <p className="text-gray-400 text-sm">Loading user data...</p>
           </div>
-        </div>
-
-        <div className="space-y-4 mb-6">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-md bg-sky-950/30 border border-sky-900/30">
-            <Mail size={18} className="text-sky-400" />
-            <div>
-              <p className="text-xs text-gray-400">Email</p>
-              <p className="text-sm text-white">{userInfo.email}</p>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
+              <X className="w-8 h-8 text-red-400" />
             </div>
+            <p className="text-red-400 text-sm text-center mb-4">
+              Failed to load user data
+            </p>
+            <p className="text-gray-500 text-xs text-center">
+              {error}
+            </p>
           </div>
+        ) : userInfo ? (
+          <>
+            <div className="flex flex-col items-center mb-6">
+              <div className="relative">
+                {/* Try user's profile image first, then fallback to generated avatar */}
+                {userInfo.profileImageUrl ? (
+                  <img
+                    src={userInfo.profileImageUrl}
+                    alt={userInfo.name}
+                    className="w-24 h-24 rounded-full object-cover border-2 border-sky-500/30"
+                    onError={(e) => {
+                      // Fallback to generated avatar if user image fails
+                      const target = e.target as HTMLImageElement;
+                      target.src = generateAvatarUrl(userInfo.name);
+                      target.onerror = () => {
+                        // Final fallback to initials if avatar generation fails
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
+                      };
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={generateAvatarUrl(userInfo.name)}
+                    alt={userInfo.name}
+                    className="w-24 h-24 rounded-full object-cover border-2 border-sky-500/30"
+                    onError={(e) => {
+                      // Fallback to initials if avatar generation fails
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                )}
+                
+                {/* Initials fallback - only shown if both profile image and avatar fail */}
+                <div className="hidden w-24 h-24 rounded-full bg-gradient-to-br from-sky-600 to-indigo-700 flex items-center justify-center text-white text-2xl font-semibold border-2 border-sky-500/30">
+                  {getInitials(userInfo.name)}
+                </div>
+              </div>
 
-          <div className="flex items-center gap-3 px-4 py-3 rounded-md bg-sky-950/30 border border-sky-900/30">
-            <Calendar size={18} className="text-sky-400" />
-            <div>
-              <p className="text-xs text-gray-400">Joined</p>
-              <p className="text-sm text-white">{userInfo.joined}</p>
+              <div className="mt-4 text-center">
+                <h3 className="text-lg font-semibold text-white">
+                  {userInfo.name}
+                </h3>
+              </div>
             </div>
-          </div>
-        </div>
+
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-md bg-sky-950/30 border border-sky-900/30">
+                <Mail size={18} className="text-sky-400" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-gray-400">Email</p>
+                  <p className="text-sm text-white truncate">{userInfo.email}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 px-4 py-3 rounded-md bg-sky-950/30 border border-sky-900/30">
+                <Calendar size={18} className="text-sky-400" />
+                <div>
+                  <p className="text-xs text-gray-400">Joined</p>
+                  <p className="text-sm text-white">{userInfo.joined}</p>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : null}
       </div>
     </div>
   );
