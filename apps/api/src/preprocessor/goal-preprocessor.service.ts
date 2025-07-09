@@ -6,6 +6,8 @@ export interface PreprocessedGoal {
   known: string[];
   experienceLevel?: 'beginner' | 'intermediate' | 'advanced';
   formatPreference?: 'video' | 'article' | 'project' | 'mixed';
+  timeframe?: string;
+  specificFocus?: string[];
 }
 
 @Injectable()
@@ -16,18 +18,27 @@ export class GoalPreprocessorService {
 
   async preprocess(message: string): Promise<PreprocessedGoal> {
     const systemPrompt = `
-You are an expert assistant that extracts a clean learning goal from messy input.
+You are an expert assistant that extracts detailed learning goals from user input.
 
 From the user message below, return a JSON object in this exact format:
 
 {
-  "goal": "What the user wants to learn",
-  "known": ["Known skills/tools"],
+  "goal": "Clear, specific statement of what the user wants to learn",
+  "known": ["List of skills/tools they already know"],
   "experienceLevel": "beginner" | "intermediate" | "advanced",
-  "formatPreference": "video" | "article" | "project" | "mixed"
+  "formatPreference": "video" | "article" | "project" | "mixed",
+  "timeframe": "How long they want to spend learning (if mentioned)",
+  "specificFocus": ["Specific areas they want to emphasize or avoid"]
 }
 
-If some fields are missing in the message, infer them from context. Output JSON ONLY.
+GUIDELINES:
+- Make the goal specific and actionable
+- Infer experience level from context clues (mentions of existing skills, complexity of language used)
+- Default to "mixed" for formatPreference unless they specifically mention a preference
+- Include timeframe only if explicitly or implicitly mentioned
+- Look for specific interests, constraints, or focus areas they mention
+
+If some fields are missing in the message, infer them intelligently from context. Output JSON ONLY.
 `;
 
     const userPrompt = `User message:\n"""${message}"""`;
