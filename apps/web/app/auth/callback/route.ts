@@ -9,12 +9,13 @@ export async function GET(request: Request) {
   
   console.log('Auth code:', code)
   console.log('Full URL:', requestUrl.toString())
-
+  
   if (code) {
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    
     try {
+      // Await cookies() - this is crucial for newer Next.js versions
+      const cookieStore = await cookies()
+      const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+      
       console.log('Attempting to exchange code for session')
       const { data, error } = await supabase.auth.exchangeCodeForSession(code)
       
@@ -24,14 +25,15 @@ export async function GET(request: Request) {
       }
       
       console.log('Successfully exchanged code for session:', data)
+      
+      return NextResponse.redirect(new URL('/chat', requestUrl.origin))
+      
     } catch (error) {
       console.error('Error in auth callback:', error)
       return NextResponse.redirect(new URL('/signin?error=auth_error', requestUrl.origin))
     }
   } else {
-    console.log('No auth code found in URL - likely using implicit flow')
+    console.log('No auth code found in URL')
+    return NextResponse.redirect(new URL('/signin?error=no_code', requestUrl.origin))
   }
-
-  console.log('Redirecting to chat')
-  return NextResponse.redirect(new URL('/chat', requestUrl.origin))
 }
