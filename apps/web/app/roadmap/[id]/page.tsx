@@ -210,10 +210,10 @@ const RoadmapPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <Sidenav currentRoadmapId={params.id as string} />
-        <div className="ml-16 flex items-center justify-center h-screen">
-          <div className="flex items-center space-x-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-400"></div>
-            <span className="text-lg">Loading roadmap...</span>
+        <div className="ml-16 flex items-center justify-center h-screen p-4">
+          <div className="flex flex-col items-center space-y-3">
+            <div className="animate-spin rounded-full h-7 w-7 sm:h-8 sm:w-8 border-b-2 border-sky-400"></div>
+            <span className="text-base sm:text-lg">Loading roadmap...</span>
           </div>
         </div>
       </div>
@@ -224,14 +224,14 @@ const RoadmapPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <Sidenav currentRoadmapId={params.id as string} />
-        <div className="ml-16 flex items-center justify-center h-screen">
-          <div className="text-center">
-            <div className="text-red-400 text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold mb-2">Error</h1>
+        <div className="ml-16 flex items-center justify-center h-screen p-4">
+          <div className="text-center max-w-md">
+            <div className="text-red-400 text-5xl sm:text-6xl mb-4">⚠️</div>
+            <h1 className="text-xl sm:text-2xl font-bold mb-2">Error</h1>
             <p className="text-gray-400 mb-6">{error}</p>
             <button
               onClick={() => router.push("/chat")}
-              className="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 mx-auto"
+              className="px-5 py-2.5 sm:px-6 sm:py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 mx-auto"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Chat
@@ -246,16 +246,16 @@ const RoadmapPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <Sidenav currentRoadmapId={params.id as string} />
-        <div className="ml-16 flex items-center justify-center h-screen">
-          <div className="text-center">
-            <div className="text-gray-400 text-6xl mb-4">📋</div>
-            <h1 className="text-2xl font-bold mb-2">No Roadmap Found</h1>
+        <div className="ml-16 flex items-center justify-center h-screen p-4">
+          <div className="text-center max-w-md">
+            <div className="text-gray-400 text-5xl sm:text-6xl mb-4">📋</div>
+            <h1 className="text-xl sm:text-2xl font-bold mb-2">No Roadmap Found</h1>
             <p className="text-gray-400 mb-6">
               The requested roadmap could not be found.
             </p>
             <button
               onClick={() => router.push("/chat")}
-              className="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 mx-auto"
+              className="px-5 py-2.5 sm:px-6 sm:py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 mx-auto"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Chat
@@ -270,35 +270,35 @@ const RoadmapPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       <Sidenav currentRoadmapId={params.id as string} />
 
-      <div className="ml-16 p-8">
+      <div className="ml-16 p-4 md:p-6 lg:p-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-8 gap-4">
+          <div className="flex items-start sm:items-center gap-3 md:gap-4">
             <button
               onClick={() => router.push("/chat")}
-              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/30 transition-all duration-200 group"
+              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/30 transition-all duration-200 group flex-shrink-0"
             >
               <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-sky-400" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 break-words">
                 {roadmapData.title}
               </h1>
-              <div className="flex items-center gap-4 text-sm text-gray-400">
+              <div className="flex flex-col xs:flex-row items-start xs:items-center gap-2 xs:gap-4 text-sm text-gray-400">
                 <div className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
+                  <Calendar className="w-4 h-4 flex-shrink-0" />
                   {formatDate(roadmapData.created_at)}
                 </div>
                 <div className="flex items-center gap-1">
-                  <Target className="w-4 h-4" />
-                  {roadmapData.goal}
+                  <Target className="w-4 h-4 flex-shrink-0" />
+                  <span className="break-words">{roadmapData.goal}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="relative">
+          <div className="relative mt-2 sm:mt-0">
             <button
               onClick={() => setShowActions(!showActions)}
               className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-sky-400/30 transition-all duration-200"
@@ -313,8 +313,8 @@ const RoadmapPage: React.FC = () => {
                     onClick={handleTogglePublic}
                     className="w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-white/10 rounded-lg flex items-center gap-2"
                   >
-                    <Share2 className="w-4 h-4" />
-                    {roadmapData.is_public ? "Make Private" : "Make Public"}
+                    <Share2 className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{roadmapData.is_public ? "Make Private" : "Make Public"}</span>
                   </button>
 
                   {roadmapData.is_public && (
@@ -322,8 +322,8 @@ const RoadmapPage: React.FC = () => {
                       onClick={handleCopyLink}
                       className="w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-white/10 rounded-lg flex items-center gap-2"
                     >
-                      <Share2 className="w-4 h-4" />
-                      Copy Share Link
+                      <Share2 className="w-4 h-4 flex-shrink-0" />
+                      <span className="truncate">Copy Share Link</span>
                     </button>
                   )}
 
@@ -332,8 +332,8 @@ const RoadmapPage: React.FC = () => {
                     disabled={isDeleting}
                     className="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg flex items-center gap-2 disabled:opacity-50"
                   >
-                    <Trash2 className="w-4 h-4" />
-                    {isDeleting ? "Deleting..." : "Delete Roadmap"}
+                    <Trash2 className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate">{isDeleting ? "Deleting..." : "Delete Roadmap"}</span>
                   </button>
                 </div>
               </div>
@@ -343,10 +343,10 @@ const RoadmapPage: React.FC = () => {
 
         {/* Status indicator */}
         {roadmapData.is_public && (
-          <div className="mb-6 p-3 bg-sky-900/20 border border-sky-500/30 rounded-lg">
+          <div className="mb-4 md:mb-6 p-3 bg-sky-900/20 border border-sky-500/30 rounded-lg">
             <div className="flex items-center gap-2 text-sky-400">
-              <Share2 className="w-4 h-4" />
-              <span className="text-sm">
+              <Share2 className="w-4 h-4 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">
                 This roadmap is public and can be shared with others
               </span>
             </div>
@@ -357,7 +357,7 @@ const RoadmapPage: React.FC = () => {
         <RoadmapDisplay
           roadmap={roadmapData.roadmap}
           title={roadmapData.title}
-          className="max-w-4xl mx-auto"
+          className="w-full max-w-4xl mx-auto"
         />
       </div>
 
