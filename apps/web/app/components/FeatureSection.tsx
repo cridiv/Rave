@@ -4,10 +4,10 @@ import SpotlightCard from "../bits/SpotlightCard";
 
 const FeatureSection = () => {
   return (
-    <div id="features" className="py-7 px-16 max-w-7xl mx-auto">
+    <div id="features" className="py-7 px-4 sm:px-8 md:px-16 max-w-7xl mx-auto">
       {/* Section Header */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center px-4 py-2  border-sky-500 rounded-full bg-sky-500/10 border border-sky-500/20 mb-6">
+        <div className="inline-flex items-center justify-center px-4 py-2 border-sky-500 rounded-full bg-sky-500/10 border border-sky-500/20 mb-6">
           <span className="text-sky-500 text-sm font-medium uppercase tracking-wider">
             Features
           </span>
@@ -19,14 +19,14 @@ const FeatureSection = () => {
       </div>
 
       {/* Grid Layout for Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 justify-items-center mx-auto max-w-6xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 justify-items-center mx-auto max-w-6xl">
         <SpotlightCard
-          className="custom-spotlight-card p-7 h-[400px] max-w-[320px] pb-20 border-none bg-gradient-to-r from-black/60 via-black/50 to-black/60 backdrop-blur-xl shadow-2xl shadow-sky-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-sky-500/40 transition-all duration-300"
+          className="custom-spotlight-card p-5 sm:p-7 h-auto min-h-[400px] w-full max-w-[320px] pb-16 sm:pb-20 border-none bg-gradient-to-r from-black/60 via-black/50 to-black/60 backdrop-blur-xl shadow-2xl shadow-sky-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-sky-500/40 transition-all duration-300"
           spotlightColor="rgba(0, 229, 255, 0.2)"
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-sky-500"
+              className="w-12 h-12 mb-4 text-sky-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -52,12 +52,12 @@ const FeatureSection = () => {
         </SpotlightCard>
 
         <SpotlightCard
-          className="custom-spotlight-card p-7 h-[400px] max-w-[320px] pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-pink-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-pink-500/40 transition-all duration-300"
+          className="custom-spotlight-card p-5 sm:p-7 h-auto min-h-[400px] w-full max-w-[320px] pb-16 sm:pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-pink-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-pink-500/40 transition-all duration-300"
           spotlightColor="rgba(255, 0, 128, 0.2)"
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-pink-500"
+              className="w-12 h-12 mb-4 text-pink-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -81,12 +81,12 @@ const FeatureSection = () => {
         </SpotlightCard>
 
         <SpotlightCard
-          className="custom-spotlight-card p-7 h-[400px] max-w-[320px] pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-green-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-green-500/40 transition-all duration-300"
+          className="custom-spotlight-card p-5 sm:p-7 h-auto min-h-[400px] w-full max-w-[320px] pb-16 sm:pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-green-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-green-500/40 transition-all duration-300"
           spotlightColor="rgba(0, 255, 128, 0.2)"
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-green-500"
+              className="w-12 h-12 mb-4 text-green-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -108,12 +108,12 @@ const FeatureSection = () => {
         </SpotlightCard>
 
         <SpotlightCard
-          className="custom-spotlight-card p-7 h-[400px] max-w-[320px] pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-orange-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-orange-500/40 transition-all duration-300"
+          className="custom-spotlight-card p-5 sm:p-7 h-auto min-h-[400px] w-full max-w-[320px] pb-16 sm:pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-orange-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-orange-500/40 transition-all duration-300"
           spotlightColor="rgba(255, 128, 0, 0.2)"
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-orange-500"
+              className="w-12 h-12 mb-4 text-orange-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -138,12 +138,12 @@ const FeatureSection = () => {
         </SpotlightCard>
 
         <SpotlightCard
-          className="custom-spotlight-card p-7 h-[400px] max-w-[320px] pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-yellow-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-yellow-500/40 transition-all duration-300"
+          className="custom-spotlight-card p-5 sm:p-7 h-auto min-h-[400px] w-full max-w-[320px] pb-16 sm:pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-yellow-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-yellow-500/40 transition-all duration-300"
           spotlightColor="rgba(240, 177, 0, 0.2)"
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-yellow-500"
+              className="w-12 h-12 mb-4 text-yellow-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -165,12 +165,12 @@ const FeatureSection = () => {
         </SpotlightCard>
 
         <SpotlightCard
-          className="custom-spotlight-card p-7 h-[400px] max-w-[320px] pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-violet-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-violet-500/40 transition-all duration-300"
+          className="custom-spotlight-card p-5 sm:p-7 h-auto min-h-[400px] w-full max-w-[320px] pb-16 sm:pb-20 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-violet-500/20 border border-white/10 hover:-translate-y-1 hover:shadow-violet-500/40 transition-all duration-300"
           spotlightColor="rgba(139, 92, 246, 0.2)"
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-violet-500"
+              className="w-12 h-12 mb-4 text-violet-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -187,7 +187,9 @@ const FeatureSection = () => {
               Resource Integration
             </h3>
             <p className="text-gray-400 flex-grow pt-2">
-              Seamlessly connect with the best learning materials from across the web - courses, articles, videos, and practice exercises are automatically curated and integrated into your journey.
+              Seamlessly connect with the best learning materials from across
+              the web - courses, articles, videos, and practice exercises are
+              automatically curated and integrated into your journey.
             </p>
           </div>
         </SpotlightCard>
