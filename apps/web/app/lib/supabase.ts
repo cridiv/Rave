@@ -1,5 +1,23 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Fix clock skew BEFORE creating the client
+if (typeof window !== 'undefined') {
+  const originalNow = Date.now;
+  
+  // Always subtract 1 hour to handle clock skew
+  Date.now = function() {
+    return originalNow() - (60 * 60 * 1000); // Subtract 1 hour
+  };
+  
+  // Also patch performance.now if it exists
+  if (window.performance && window.performance.now) {
+    const originalPerformanceNow = window.performance.now;
+    window.performance.now = function() {
+      return originalPerformanceNow() - (60 * 60 * 1000);
+    };
+  }
+}
+
 export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -9,8 +27,10 @@ export const supabase = createClient(
       flowType: 'pkce',
       autoRefreshToken: true,
       persistSession: true,
-      // Add debug logging to see what's happening
-      debug: process.env.NODE_ENV === 'development'
+      storageKey: 'sb-auth-token',
+      // Disable automatic session refresh to avoid timing issues
+      autoRefreshToken: false,
+      debug: false
     },
     global: {
       headers: {
@@ -20,56 +40,17 @@ export const supabase = createClient(
   }
 );
 
-// Override the JWT decode to handle clock skew
-const originalDecode = (globalThis as any).atob;
-if (typeof window !== 'undefined' && originalDecode) {
-  // Handle clock skew by adjusting time validation
-  const originalFetch = window.fetch;
-  window.fetch = function(input, init) {
-    // If this is a Supabase auth request, add some tolerance
-    if (typeof input === 'string' && input.includes('supabase') && input.includes('auth')) {
-      const headers = new Headers(init?.headers);
-      headers.set('X-Client-Time', Date.now().toString());
-      return originalFetch(input, { ...init, headers });
-    }
-    return originalFetch(input, init);
-  };
-}
-
-// Alternative approach - monkey patch Date.now() for Supabase operations
+// Manual session refresh with proper timing
 if (typeof window !== 'undefined') {
-  const originalNow = Date.now;
-  let clockSkewAdjustment = 0;
-  
-  // Detect and adjust for clock skew
-  const adjustForClockSkew = () => {
-    // If we detect future token errors, adjust the clock
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('error')?.includes('clock') || 
-        window.location.hash.includes('issued in the future')) {
-      clockSkewAdjustment = -3600000; // Subtract 1 hour
-      console.log('Clock skew detected, adjusting by 1 hour');
+  // Set up manual token refresh every 50 minutes
+  setInterval(async () => {
+    try {
+      const { data, error } = await supabase.auth.refreshSession();
+      if (error) {
+        console.log('Session refresh error:', error);
+      }
+    } catch (e) {
+      console.log('Session refresh failed:', e);
     }
-  };
-  
-  // Check for clock skew on page load
-  adjustForClockSkew();
-  
-  // Override Date.now for clock skew tolerance
-  Date.now = function() {
-    return originalNow() + clockSkewAdjustment;
-  };
-  
-  // Listen for auth errors and adjust clock skew
-  window.addEventListener('error', (event) => {
-    if (event.message?.includes('issued in the future') || 
-        event.message?.includes('clock skew')) {
-      clockSkewAdjustment = -3600000;
-      console.log('Adjusting clock skew due to auth error');
-      // Retry auth
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    }
-  });
+  }, 50 * 60 * 1000); // 50 minutes
 }
