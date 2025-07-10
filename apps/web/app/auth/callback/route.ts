@@ -9,11 +9,12 @@ export async function GET(request: Request) {
   
   console.log('Auth code:', code)
   console.log('Full URL:', requestUrl.toString())
+  console.log('Search params:', requestUrl.searchParams.toString())
   
   if (code) {
     try {
-      // Fix: Pass cookies directly without await
-      const supabase = createRouteHandlerClient({ cookies })
+      const cookieStore = cookies()
+      const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
       
       console.log('Attempting to exchange code for session')
       const { data, error } = await supabase.auth.exchangeCodeForSession(code)
@@ -23,8 +24,13 @@ export async function GET(request: Request) {
         return NextResponse.redirect(new URL('/signin?error=auth_error', requestUrl.origin))
       }
       
-      console.log('Successfully exchanged code for session:', data)
-      return NextResponse.redirect(new URL('/chat', requestUrl.origin))
+      console.log('Successfully exchanged code for session:', data.session?.user?.email)
+      
+      // Create the response with redirect
+      const response = NextResponse.redirect(new URL('/chat', requestUrl.origin))
+      
+      // Ensure cookies are set properly
+      return response
       
     } catch (error) {
       console.error('Error in auth callback:', error)
@@ -32,6 +38,17 @@ export async function GET(request: Request) {
     }
   } else {
     console.log('No auth code found in URL')
+    console.log('URL hash:', requestUrl.hash)
+    
+    // Handle hash-based tokens (fallback)
+    const hashParams = requestUrl.hash ? new URLSearchParams(requestUrl.hash.substring(1)) : null
+    const accessToken = hashParams?.get('access_token')
+    
+    if (accessToken) {
+      console.log('Found access token in hash, redirecting to handle client-side')
+      return NextResponse.redirect(new URL('/chat', requestUrl.origin))
+    }
+    
     return NextResponse.redirect(new URL('/signin?error=no_code', requestUrl.origin))
   }
 }
