@@ -1,24 +1,25 @@
 "use client";
 import React from "react";
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 
 const SignIn = () => {
-  const handleOAuthLogin = async (provider: 'google' | 'github') => {
+  const handleOAuthLogin = async (provider: "google" | "github") => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
         queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        }
+          access_type: "offline",
+          prompt: "consent",
+        },
       },
     });
 
     if (error) {
-      console.error('OAuth error:', error.message);
+      console.error("OAuth error:", error.message);
     }
   };
   return (
@@ -44,6 +45,12 @@ const SignIn = () => {
             <div className="text-3xl font-bold">
               Welcome To{" "}
               <span className=" bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text">
+                <Image
+                  src="/rave-sm.svg"
+                  alt="Rave logo"
+                  width={24}
+                  height={24}
+                />
                 Rave
               </span>
             </div>
@@ -58,7 +65,7 @@ const SignIn = () => {
           {/* Sign-in buttons */}
           <div className="space-y-4 pb-5">
             <button
-              onClick={() => handleOAuthLogin('google')}
+              onClick={() => handleOAuthLogin("google")}
               className="w-full bg-white/10 hover:bg-white/15 text-white font-medium py-3 px-4 rounded-xl border border-white/10 transition duration-300 flex items-center justify-center space-x-2 hover:shadow-lg hover:shadow-white/5"
             >
               <svg
@@ -89,7 +96,7 @@ const SignIn = () => {
 
             {/* <button className="w-full bg-white/10 hover:bg-white/15 text-white font-medium py-3 px-4 rounded-xl border border-white/10 transition duration-300 flex items-center justify-center space-x-2 hover:shadow-lg hover:shadow-white/5"> */}
             <button
-              onClick={() => handleOAuthLogin('github')}
+              onClick={() => handleOAuthLogin("github")}
               className="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-3 px-4 rounded-xl transition duration-300 flex items-center justify-center space-x-2 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/30"
             >
               <svg
