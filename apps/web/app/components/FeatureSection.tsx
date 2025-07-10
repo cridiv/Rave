@@ -26,7 +26,7 @@ const FeatureSection = () => {
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-12 h-12 mb-4 text-sky-500"
+              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-sky-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -57,7 +57,7 @@ const FeatureSection = () => {
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-12 h-12 mb-4 text-pink-500"
+              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-pink-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -86,7 +86,7 @@ const FeatureSection = () => {
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-12 h-12 mb-4 text-green-500"
+              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-green-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -113,7 +113,7 @@ const FeatureSection = () => {
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-12 h-12 mb-4 text-orange-500"
+              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-orange-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -143,7 +143,7 @@ const FeatureSection = () => {
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-12 h-12 mb-4 text-yellow-500"
+              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-yellow-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -170,7 +170,7 @@ const FeatureSection = () => {
         >
           <div className="flex flex-col items-start text-left h-full">
             <svg
-              className="w-12 h-12 mb-4 text-violet-500"
+              className="w-10 h-10 sm:w-12 sm:h-12 mb-3 sm:mb-4 text-violet-500"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
