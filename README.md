@@ -1,4 +1,4 @@
-# Rave 🚀
+# Rave 
 
 **Rave** is a collaborative AI-powered roadmap planning tool designed for developers, teams, and innovators. It helps you brainstorm, structure, and evolve your project ideas into executable technical roadmaps — all powered by intelligent suggestions and a sleek interface.
 
