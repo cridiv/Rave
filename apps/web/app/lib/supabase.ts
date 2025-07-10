@@ -12,7 +12,7 @@ if (typeof window !== 'undefined') {
       return new OriginalDate(OriginalDate.now() - CLOCK_SKEW_OFFSET);
     } else {
       // new Date(timestamp) or new Date(string) - keep original
-      return new OriginalDate(...args);
+      return Reflect.construct(OriginalDate, args);
     }
   } as any;
   
