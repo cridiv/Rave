@@ -62,23 +62,16 @@ export async function GET(request: Request) {
     }
   } else {
     console.log("No auth code found in URL");
-    console.log("URL hash:", requestUrl.hash);
 
-    // Handle hash-based tokens (fallback)
-    const hashParams = requestUrl.hash
-      ? new URLSearchParams(requestUrl.hash.substring(1))
-      : null;
-    const accessToken = hashParams?.get("access_token");
+    // Important: We cannot access the hash fragment on the server side
+    // The hash part of URLs is not sent to the server
 
-    if (accessToken) {
-      console.log(
-        "Found access token in hash, redirecting to handle client-side"
-      );
-      return NextResponse.redirect(new URL("/chat", requestUrl.origin));
-    }
+    // If we're seeing a URL with no code but potentially a hash,
+    // we need to redirect to a client-side page that can handle the hash
 
+    // Redirect to a client-side auth handler that can process the hash fragment
     return NextResponse.redirect(
-      new URL("/signin?error=no_code", requestUrl.origin)
+      new URL("/auth/client-handler", requestUrl.origin)
     );
   }
 }
