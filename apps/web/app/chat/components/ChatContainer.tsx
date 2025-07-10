@@ -49,7 +49,9 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userId, roadmapId }) => {
       if (!roadmapId) return;
 
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/roadmap/${roadmapId}?userId=${userId}`);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/roadmap/${roadmapId}?userId=${userId}`
+        );
         if (res.ok) {
           const data = await res.json();
           setRoadmap(data.roadmap);
@@ -94,8 +96,8 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userId, roadmapId }) => {
   const suggestions = [
     "Generate a roadmap for a frontend developer",
     "Learn machine learning in 6 months",
-    "Become a full-stack developer",
-    "Master React and Next.js",
+    "How to escape sapa in just 3 months",
+    "How can I lose body fat in 6 Months",
   ];
 
   // Handle sending messages to the API
@@ -117,24 +119,27 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ userId, roadmapId }) => {
       if (data.roadmap) {
         console.log("Setting roadmap to:", data.roadmap);
         setRoadmap(data.roadmap);
-        
+
         // Save the NEW roadmap to history
         try {
-          const saveRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/roadmap`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              userId,
-              title: message,
-              goal: message,
-              roadmap: data.roadmap,
-            }),
-          });
+          const saveRes = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/roadmap`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userId,
+                title: message,
+                goal: message,
+                roadmap: data.roadmap,
+              }),
+            }
+          );
 
           if (saveRes.ok) {
             const savedRoadmap = await saveRes.json();
             console.log("✅ Roadmap saved:", savedRoadmap);
-            
+
             // Redirect to the new roadmap page
             router.push(`/roadmap/${savedRoadmap.id}`);
           } else {
