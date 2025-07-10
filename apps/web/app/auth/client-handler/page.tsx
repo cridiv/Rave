@@ -1,10 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function ClientAuthHandler() {
+// Main component with Suspense boundary for useSearchParams
+export default function ClientAuthHandlerPage() {
+  return (
+    <Suspense fallback={<AuthLoadingState />}>
+      <ClientAuthHandler />
+    </Suspense>
+  );
+}
+
+// Loading state component
+function AuthLoadingState() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center p-24">
+      <h1 className="text-2xl font-semibold mb-4">Loading Authentication...</h1>
+      <div className="animate-pulse text-blue-500">Please wait...</div>
+    </div>
+  );
+}
+
+// The actual auth handler component
+function ClientAuthHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [message, setMessage] = useState("Processing your authentication...");

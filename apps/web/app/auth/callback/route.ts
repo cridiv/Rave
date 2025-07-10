@@ -63,12 +63,39 @@ export async function GET(request: Request) {
   } else {
     console.log("No auth code found in URL");
 
-    // When we don't have a code, we need to redirect directly to /auth/client-handler
+    // When we don't have a code, we need to redirect directly to the client handler
     // without any additional logic, since we can't access the hash on the server
 
+    // Check for special cases in the request URL
+    const requestUrlString = request.url;
+
+    // If this is already a signin page with error AND potentially a hash fragment,
+    // we want to send to a special page that can handle direct token processing
+    if (
+      requestUrlString.includes("/signin") &&
+      requestUrlString.includes("error=")
+    ) {
+      console.log(
+        "Detected a signin page with error params - redirecting to token handler"
+      );
+      return NextResponse.redirect(
+        new URL("/auth/handle-token", requestUrl.origin)
+      );
+    }
+
+    // Get the URL of the client handler
+    const clientHandlerUrl = new URL("/auth/client-handler", requestUrl.origin);
+
+    // Preserve any query parameters from the original request
+    // This ensures error parameters and other info is passed along
+    requestUrl.searchParams.forEach((value, key) => {
+      if (key !== "code") {
+        // Skip the code param since we already know it's not there
+        clientHandlerUrl.searchParams.set(key, value);
+      }
+    });
+
     // Redirect to client handler to process any hash fragments that might be present
-    return NextResponse.redirect(
-      new URL("/auth/client-handler", requestUrl.origin)
-    );
+    return NextResponse.redirect(clientHandlerUrl);
   }
 }
