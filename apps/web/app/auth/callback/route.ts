@@ -12,8 +12,8 @@ export async function GET(request: Request) {
   
   if (code) {
     try {
-      const cookieStore = await cookies()
-      const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+      // Fix: Pass cookies directly without await
+      const supabase = createRouteHandlerClient({ cookies })
       
       console.log('Attempting to exchange code for session')
       const { data, error } = await supabase.auth.exchangeCodeForSession(code)
