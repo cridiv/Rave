@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@repo/ui": "*",
+    "@supabase/ssr": "^0.6.1",
     "core-js": "^3.44.0",
     "framer-motion": "^12.23.0",
     "geist": "^1.4.2",
