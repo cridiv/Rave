@@ -141,13 +141,4 @@ This project is licensed under the MIT License
 ---
 
 
-<div align="center">
-  <img src="https://img.shields.io/github/stars/cridiv/Rave?style=social" alt="GitHub stars">
-  <img src="https://img.shields.io/github/forks/cridiv/Rave?style=social" alt="GitHub forks">
-  <img src="https://img.shields.io/github/issues/cridiv/Rave" alt="GitHub issues">
-  <img src="https://img.shields.io/github/license/cridiv/Rave" alt="License">
-</div>
-
----
-
 *Built with ❤️ by developers, for developers*
