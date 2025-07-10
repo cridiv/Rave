@@ -2,7 +2,6 @@
 import React from "react";
 import { supabase } from "../lib/supabase";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 
 const SignIn = () => {
@@ -45,12 +44,6 @@ const SignIn = () => {
             <div className="text-3xl font-bold">
               Welcome To{" "}
               <span className=" bg-gradient-to-r from-sky-500 to-sky-100 text-transparent bg-clip-text">
-                <Image
-                  src="/rave-sm.svg"
-                  alt="Rave logo"
-                  width={24}
-                  height={24}
-                />
                 Rave
               </span>
             </div>
