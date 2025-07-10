@@ -63,13 +63,10 @@ export async function GET(request: Request) {
   } else {
     console.log("No auth code found in URL");
 
-    // Important: We cannot access the hash fragment on the server side
-    // The hash part of URLs is not sent to the server
+    // When we don't have a code, we need to redirect directly to /auth/client-handler
+    // without any additional logic, since we can't access the hash on the server
 
-    // If we're seeing a URL with no code but potentially a hash,
-    // we need to redirect to a client-side page that can handle the hash
-
-    // Redirect to a client-side auth handler that can process the hash fragment
+    // Redirect to client handler to process any hash fragments that might be present
     return NextResponse.redirect(
       new URL("/auth/client-handler", requestUrl.origin)
     );
