@@ -14,14 +14,17 @@ import SignoutModal from "./SignoutModal";
 import AccountModal from "./AccountModal";
 import SettingsModal from "./SettingsModal";
 import Link from "next/link";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 
 type SidenavProps = {
   initialChatHistory?: { id: string; title: string; date: string }[];
   currentRoadmapId?: string;
 };
 
-const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadmapId }) => {
+const Sidenav: React.FC<SidenavProps> = ({
+  initialChatHistory = [],
+  currentRoadmapId,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [showSignoutModal, setShowSignoutModal] = useState(false);
@@ -35,7 +38,10 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadm
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
-      const supabase = createClientComponentClient();
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
       const {
         data: { user },
         error,
@@ -49,7 +55,7 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadm
 
       setUserId(user.id);
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       if (!apiUrl) {
         console.error("❌ Missing NEXT_PUBLIC_API_URL in .env.local");
         setIsLoading(false);
@@ -147,7 +153,11 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadm
             onClick={toggleExpanded}
             className="hidden lg:flex self-end p-2 m-2 rounded-full hover:bg-sky-800/20 text-sky-400"
           >
-            {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+            {isExpanded ? (
+              <ChevronLeft size={16} />
+            ) : (
+              <ChevronRight size={16} />
+            )}
           </button>
 
           {/* Close Button on Mobile */}
@@ -193,7 +203,9 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadm
 
             <div className="space-y-1 px-2">
               {isLoading ? (
-                <div className={`text-gray-400 text-xs italic px-3 ${isExpanded ? "block" : "hidden"}`}>
+                <div
+                  className={`text-gray-400 text-xs italic px-3 ${isExpanded ? "block" : "hidden"}`}
+                >
                   Loading...
                 </div>
               ) : roadmapHistory.length > 0 ? (
@@ -203,14 +215,15 @@ const Sidenav: React.FC<SidenavProps> = ({ initialChatHistory = [], currentRoadm
                     href={`/roadmap/${roadmap.id}`}
                     className={`flex items-center rounded-md px-2 py-2 w-full text-left
                       transition-all duration-200 group
-                      ${currentRoadmapId === roadmap.id 
-                        ? "bg-sky-800/30 text-sky-300 border border-sky-500/30" 
-                        : "text-gray-300 hover:bg-sky-800/20 hover:text-white"
+                      ${
+                        currentRoadmapId === roadmap.id
+                          ? "bg-sky-800/30 text-sky-300 border border-sky-500/30"
+                          : "text-gray-300 hover:bg-sky-800/20 hover:text-white"
                       }
                       ${isExpanded ? "justify-start" : "justify-center"}`}
                   >
-                    <MessageSquare 
-                      size={16} 
+                    <MessageSquare
+                      size={16}
                       className={`${currentRoadmapId === roadmap.id ? "text-sky-400" : "text-gray-500 group-hover:text-sky-400"}`}
                     />
                     {isExpanded && (

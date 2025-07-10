@@ -1,10 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 import RoadmapDisplay from "../../chat/components/RoadmapDisplay";
 import Sidenav from "../../chat/components/Sidenav/Sidenav";
-import { ArrowLeft, Calendar, Target, Share2, Trash2, MoreHorizontal } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  Target,
+  Share2,
+  Trash2,
+  MoreHorizontal,
+} from "lucide-react";
 
 // Define types for the roadmap data
 type Resource = {
@@ -38,7 +45,7 @@ type RoadmapData = {
 
 // Helper function to get API URL
 const getApiUrl = () => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   return apiUrl;
 };
 
@@ -55,7 +62,10 @@ const RoadmapPage: React.FC = () => {
   // Get user and fetch roadmap data
   useEffect(() => {
     const fetchRoadmap = async () => {
-      const supabase = createClientComponentClient();
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
       const {
         data: { user },
         error: authError,
@@ -72,8 +82,10 @@ const RoadmapPage: React.FC = () => {
 
       try {
         const apiUrl = getApiUrl();
-        const res = await fetch(`${apiUrl}/roadmap/${params.id}?userId=${user.id}`);
-        
+        const res = await fetch(
+          `${apiUrl}/roadmap/${params.id}?userId=${user.id}`
+        );
+
         if (!res.ok) {
           if (res.status === 404) {
             setError("Roadmap not found");
@@ -105,15 +117,20 @@ const RoadmapPage: React.FC = () => {
   const handleDelete = async () => {
     if (!roadmapData || !userId) return;
 
-    const confirmed = window.confirm("Are you sure you want to delete this roadmap? This action cannot be undone.");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this roadmap? This action cannot be undone."
+    );
     if (!confirmed) return;
 
     setIsDeleting(true);
     try {
       const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/roadmap/${roadmapData.id}?userId=${userId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${apiUrl}/roadmap/${roadmapData.id}?userId=${userId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (res.ok) {
         router.push("/chat");
@@ -145,7 +162,9 @@ const RoadmapPage: React.FC = () => {
       });
 
       if (res.ok) {
-        setRoadmapData(prev => prev ? { ...prev, is_public: !prev.is_public } : null);
+        setRoadmapData((prev) =>
+          prev ? { ...prev, is_public: !prev.is_public } : null
+        );
       } else {
         console.error("❌ Failed to toggle public status");
         alert("Failed to update sharing settings. Please try again.");
@@ -159,7 +178,7 @@ const RoadmapPage: React.FC = () => {
   // Copy share link to clipboard
   const handleCopyLink = async () => {
     if (!roadmapData) return;
-    
+
     const shareUrl = `${window.location.origin}/roadmap/${roadmapData.id}`;
     try {
       await navigator.clipboard.writeText(shareUrl);
@@ -231,7 +250,9 @@ const RoadmapPage: React.FC = () => {
           <div className="text-center">
             <div className="text-gray-400 text-6xl mb-4">📋</div>
             <h1 className="text-2xl font-bold mb-2">No Roadmap Found</h1>
-            <p className="text-gray-400 mb-6">The requested roadmap could not be found.</p>
+            <p className="text-gray-400 mb-6">
+              The requested roadmap could not be found.
+            </p>
             <button
               onClick={() => router.push("/chat")}
               className="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 mx-auto"
@@ -248,7 +269,7 @@ const RoadmapPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       <Sidenav currentRoadmapId={params.id as string} />
-      
+
       <div className="ml-16 p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -260,7 +281,9 @@ const RoadmapPage: React.FC = () => {
               <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-sky-400" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">{roadmapData.title}</h1>
+              <h1 className="text-3xl font-bold text-white mb-2">
+                {roadmapData.title}
+              </h1>
               <div className="flex items-center gap-4 text-sm text-gray-400">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-4 h-4" />
@@ -293,7 +316,7 @@ const RoadmapPage: React.FC = () => {
                     <Share2 className="w-4 h-4" />
                     {roadmapData.is_public ? "Make Private" : "Make Public"}
                   </button>
-                  
+
                   {roadmapData.is_public && (
                     <button
                       onClick={handleCopyLink}
@@ -303,7 +326,7 @@ const RoadmapPage: React.FC = () => {
                       Copy Share Link
                     </button>
                   )}
-                  
+
                   <button
                     onClick={handleDelete}
                     disabled={isDeleting}
@@ -323,7 +346,9 @@ const RoadmapPage: React.FC = () => {
           <div className="mb-6 p-3 bg-sky-900/20 border border-sky-500/30 rounded-lg">
             <div className="flex items-center gap-2 text-sky-400">
               <Share2 className="w-4 h-4" />
-              <span className="text-sm">This roadmap is public and can be shared with others</span>
+              <span className="text-sm">
+                This roadmap is public and can be shared with others
+              </span>
             </div>
           </div>
         )}

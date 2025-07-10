@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 import { X } from "lucide-react";
 
 type SignoutModalProps = {
@@ -9,7 +9,10 @@ type SignoutModalProps = {
   onSignout: () => void;
 };
 
-const supabase = createClientComponentClient();
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const SignoutModal: React.FC<SignoutModalProps> = ({
   isOpen,
@@ -19,13 +22,13 @@ const SignoutModal: React.FC<SignoutModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleSignOut = async () => {
-  const { error } = await supabase.auth.signOut();
-  if (error) {
-    console.error("❌ Sign-out failed:", error.message);
-  } else {
-    window.location.href = "/";
-  }
-};
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("❌ Sign-out failed:", error.message);
+    } else {
+      window.location.href = "/";
+    }
+  };
 
   // Close modal when clicking outside
   useEffect(() => {

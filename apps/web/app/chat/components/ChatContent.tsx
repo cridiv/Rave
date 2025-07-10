@@ -2,7 +2,7 @@
 
 import ChatContainer from "./ChatContainer";
 import { useSearchParams, useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 import Sidenav from "./Sidenav";
 import { useEffect, useState } from "react";
 
@@ -13,13 +13,20 @@ const ChatContent = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const supabase = createClientComponentClient();
+
+  // Create the Supabase client using createBrowserClient from @supabase/ssr
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     const handleAuth = async () => {
       try {
         if (window.location.hash) {
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const hashParams = new URLSearchParams(
+            window.location.hash.substring(1)
+          );
           const accessToken = hashParams.get("access_token");
           const refreshToken = hashParams.get("refresh_token");
 
@@ -38,7 +45,11 @@ const ChatContent = () => {
             if (data.session?.user) {
               setUserId(data.session.user.id);
               setLoading(false);
-              window.history.replaceState({}, document.title, window.location.pathname);
+              window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+              );
               return;
             }
           }
@@ -65,7 +76,9 @@ const ChatContent = () => {
       }
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
         setUserId(session.user.id);
         setLoading(false);

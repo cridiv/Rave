@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { X, Mail, Calendar } from "lucide-react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 
 type AccountModalProps = {
   isOpen: boolean;
@@ -35,23 +35,33 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
       setError(null);
 
       try {
-        const supabase = createClientComponentClient();
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const supabase = createBrowserClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+        const {
+          data: { user },
+          error: authError,
+        } = await supabase.auth.getUser();
 
         if (authError) throw new Error(authError.message);
         if (!user) throw new Error("No user found");
 
         const userData: UserInfo = {
-          name: user.user_metadata?.full_name || user.user_metadata?.name || "User",
+          name:
+            user.user_metadata?.full_name || user.user_metadata?.name || "User",
           email: user.email || "No email provided",
           joined: formatDate(user.created_at),
-          profileImageUrl: user.user_metadata?.avatar_url || user.user_metadata?.picture,
+          profileImageUrl:
+            user.user_metadata?.avatar_url || user.user_metadata?.picture,
         };
 
         setUserInfo(userData);
       } catch (err) {
         console.error("Error fetching user data:", err);
-        setError(err instanceof Error ? err.message : "Failed to load user data");
+        setError(
+          err instanceof Error ? err.message : "Failed to load user data"
+        );
       } finally {
         setIsLoading(false);
       }
@@ -71,7 +81,10 @@ const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
