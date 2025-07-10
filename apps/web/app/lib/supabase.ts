@@ -1,21 +1,37 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Fix clock skew BEFORE creating the client
+// Aggressive clock skew fix - patch Date constructor itself
 if (typeof window !== 'undefined') {
-  const originalNow = Date.now;
+  const OriginalDate = Date;
+  const CLOCK_SKEW_OFFSET = 60 * 60 * 1000; // 1 hour in milliseconds
   
-  // Always subtract 1 hour to handle clock skew
-  Date.now = function() {
-    return originalNow() - (60 * 60 * 1000); // Subtract 1 hour
+  // Override Date constructor
+  window.Date = function(this: any, ...args: any[]) {
+    if (args.length === 0) {
+      // new Date() - current time
+      return new OriginalDate(OriginalDate.now() - CLOCK_SKEW_OFFSET);
+    } else {
+      // new Date(timestamp) or new Date(string) - keep original
+      return new OriginalDate(...args);
+    }
+  } as any;
+  
+  // Copy static methods
+  Object.setPrototypeOf(window.Date, OriginalDate);
+  Object.defineProperty(window.Date, 'prototype', {
+    value: OriginalDate.prototype,
+    writable: false
+  });
+  
+  // Override static methods
+  window.Date.now = function() {
+    return OriginalDate.now() - CLOCK_SKEW_OFFSET;
   };
   
-  // Also patch performance.now if it exists
-  if (window.performance && window.performance.now) {
-    const originalPerformanceNow = window.performance.now;
-    window.performance.now = function() {
-      return originalPerformanceNow() - (60 * 60 * 1000);
-    };
-  }
+  window.Date.parse = OriginalDate.parse;
+  window.Date.UTC = OriginalDate.UTC;
+  
+  console.log('Clock skew fix applied - adjusted by 1 hour');
 }
 
 export const supabase = createClient(
@@ -26,31 +42,7 @@ export const supabase = createClient(
       detectSessionInUrl: true,
       flowType: 'pkce',
       autoRefreshToken: true,
-      persistSession: true,
-      storageKey: 'sb-auth-token',
-      // Disable automatic session refresh to avoid timing issues
-      autoRefreshToken: false,
-      debug: false
-    },
-    global: {
-      headers: {
-        'X-Client-Info': 'supabase-js-web'
-      }
+      persistSession: true
     }
   }
 );
-
-// Manual session refresh with proper timing
-if (typeof window !== 'undefined') {
-  // Set up manual token refresh every 50 minutes
-  setInterval(async () => {
-    try {
-      const { data, error } = await supabase.auth.refreshSession();
-      if (error) {
-        console.log('Session refresh error:', error);
-      }
-    } catch (e) {
-      console.log('Session refresh failed:', e);
-    }
-  }, 50 * 60 * 1000); // 50 minutes
-}
