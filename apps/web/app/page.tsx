@@ -7,7 +7,7 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <div className="p-8 pt-28">
+    <div className="p-8 pt-28 sm:p-4 sm:pt-8">
       <NavBar />
       <Hero />
       <FeatureSection />
