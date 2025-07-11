@@ -37,7 +37,7 @@ const ResourceLink: React.FC<{ resource: Resource | ResourceFallback }> = ({
       case "video":
         return (
           <svg
-            className="w-3 h-3 mr-1.5"
+            className="w-3 h-3 mr-1 sm:mr-1.5 flex-shrink-0"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -58,7 +58,7 @@ const ResourceLink: React.FC<{ resource: Resource | ResourceFallback }> = ({
       case "article":
         return (
           <svg
-            className="w-3 h-3 mr-1.5"
+            className="w-3 h-3 mr-1 sm:mr-1.5 flex-shrink-0"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -74,7 +74,7 @@ const ResourceLink: React.FC<{ resource: Resource | ResourceFallback }> = ({
       case "project":
         return (
           <svg
-            className="w-3 h-3 mr-1.5"
+            className="w-3 h-3 mr-1 sm:mr-1.5 flex-shrink-0"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -95,7 +95,7 @@ const ResourceLink: React.FC<{ resource: Resource | ResourceFallback }> = ({
       default:
         return (
           <svg
-            className="w-3 h-3 mr-1.5"
+            className="w-3 h-3 mr-1 sm:mr-1.5 flex-shrink-0"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -114,16 +114,18 @@ const ResourceLink: React.FC<{ resource: Resource | ResourceFallback }> = ({
   return (
     <a
       href={resource.link}
-      className="text-sky-400 hover:text-sky-300 flex items-center group px-3 py-1.5 rounded-md hover:bg-sky-900/20 transition-all"
+      className="text-sky-400 hover:text-sky-300 flex items-center group px-2 sm:px-3 py-1 sm:py-1.5 rounded-md hover:bg-sky-900/20 transition-all"
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="flex items-center text-sky-400 group-hover:text-sky-300">
+      <div className="flex items-center text-sky-400 group-hover:text-sky-300 flex-shrink-0">
         {getResourceIcon(resource.type)}
       </div>
-      <span>
+      <span className="min-w-0 flex-1">
         <span className="text-gray-400 text-xs">{resource.type}</span>{" "}
-        <span className="group-hover:underline">{resource.title}</span>
+        <span className="group-hover:underline break-words">
+          {resource.title}
+        </span>
       </span>
     </a>
   );
@@ -135,19 +137,22 @@ const NodeItem: React.FC<{
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
-    <div className="mb-4 rounded-lg transition-all duration-300 bg-white/5 border border-white/5 hover:border-sky-500/20 hover:bg-gradient-to-r from-transparent to-sky-950/20">
+    <div className="mb-3 sm:mb-4 rounded-lg transition-all duration-300 bg-white/5 border border-white/5 hover:border-sky-500/20 hover:bg-gradient-to-r from-transparent to-sky-950/20">
       <div
-        className="p-4 cursor-pointer flex items-start justify-between"
+        className="p-3 sm:p-4 cursor-pointer flex items-start justify-between gap-3"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h4 className="text-base font-medium text-white">{node.title}</h4>
+        <h4 className="text-sm sm:text-base font-medium text-white break-words">
+          {node.title}
+        </h4>
 
         <div
-          className={`text-gray-400 transform transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+          className={`text-gray-400 transform transition-transform duration-300 ${isExpanded ? "rotate-180" : ""} flex-shrink-0`}
         >
           <svg
-            width="20"
-            height="20"
+            width="18"
+            height="18"
+            className="sm:w-5 sm:h-5"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -168,14 +173,16 @@ const NodeItem: React.FC<{
         ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
       `}
       >
-        <div className="px-4 pb-4">
-          <p className="text-gray-400 text-sm mb-4">{node.description}</p>
+        <div className="px-3 sm:px-4 pb-3 sm:pb-4">
+          <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4 leading-relaxed">
+            {node.description}
+          </p>
 
           {node.resources.length > 0 && (
             <div className="space-y-1">
               <h5 className="text-xs uppercase text-gray-500 mb-2 tracking-wider flex items-center gap-1.5">
                 <svg
-                  className="w-3 h-3"
+                  className="w-3 h-3 flex-shrink-0"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -212,30 +219,33 @@ const StageSection: React.FC<{
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
-    <div className="mb-12 relative">
+    <div className="mb-8 sm:mb-12 relative">
       {/* Stage header */}
       <div
-        className="flex items-center gap-3 mb-6 cursor-pointer"
+        className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="relative">
           <div
-            className="w-10 h-10 rounded-full bg-gradient-to-r from-sky-500 to-sky-600 
-               flex items-center justify-center text-white font-medium shadow-lg shadow-sky-500/20 z-10"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-r from-sky-500 to-sky-600 
+               flex items-center justify-center text-white font-medium shadow-lg shadow-sky-500/20 z-10 text-sm sm:text-base"
           >
             {index + 1}
           </div>
         </div>
 
-        <div className="flex-1">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-white">{stage.title}</h3>
+        <div className="flex-1 min-w-0">
+          <div className="flex justify-between items-center gap-2">
+            <h3 className="text-base sm:text-lg font-semibold text-white break-words">
+              {stage.title}
+            </h3>
             <div
-              className={`transform transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+              className={`transform transition-transform duration-300 ${isExpanded ? "rotate-180" : ""} flex-shrink-0`}
             >
               <svg
-                width="16"
-                height="16"
+                width="14"
+                height="14"
+                className="sm:w-4 sm:h-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -254,13 +264,13 @@ const StageSection: React.FC<{
 
       {/* Connecting line between stages */}
       {index < totalStages - 1 && (
-        <div className="absolute left-5 top-16 bottom-0 w-0.5 bg-gradient-to-b from-sky-500 via-sky-500/50 to-sky-500/10 z-0"></div>
+        <div className="absolute left-4 sm:left-5 top-12 sm:top-16 bottom-0 w-0.5 bg-gradient-to-b from-sky-500 via-sky-500/50 to-sky-500/10 z-0"></div>
       )}
 
       {/* Node container */}
       <div
         className={`
-        ml-12 space-y-4 relative overflow-hidden transition-all duration-500 ease-in-out
+        ml-8 sm:ml-12 space-y-3 sm:space-y-4 relative overflow-hidden transition-all duration-500 ease-in-out
         ${isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"}
       `}
       >
@@ -291,53 +301,53 @@ const RoadmapDisplay: React.FC<{
   if (typeof roadmap === "string") {
     return (
       <div
-        className={`p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 text-center ${className}`}
+        className={`p-4 sm:p-6 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 text-center ${className}`}
       >
-        <p className="text-gray-300">{roadmap}</p>
+        <p className="text-gray-300 text-sm sm:text-base">{roadmap}</p>
       </div>
     );
   }
-// Replace these handler functions in your RoadmapDisplay component:
+  // Replace these handler functions in your RoadmapDisplay component:
 
-const handleExportAsImage = () => {
-  if (roadmapRef.current) {
-    exportAsImage(roadmapRef.current, {
-      filename: `${title.toLowerCase().replace(/\s+/g, "-")}.png`,
-      onStatusChange: (status, message) => {
-        setExportStatus({ status, message });
-        if (onExportStatusChange) {
-          onExportStatusChange(status, message);
-        }
-      },
-    });
-  }
-};
+  const handleExportAsImage = () => {
+    if (roadmapRef.current) {
+      exportAsImage(roadmapRef.current, {
+        filename: `${title.toLowerCase().replace(/\s+/g, "-")}.png`,
+        onStatusChange: (status, message) => {
+          setExportStatus({ status, message });
+          if (onExportStatusChange) {
+            onExportStatusChange(status, message);
+          }
+        },
+      });
+    }
+  };
 
-const handleExportAsPDF = () => {
-  if (roadmapRef.current) {
-    exportAsPDF(roadmapRef.current, {
-      filename: `${title.toLowerCase().replace(/\s+/g, "-")}.pdf`,
-      onStatusChange: (status, message) => {
-        setExportStatus({ status, message });
-        if (onExportStatusChange) {
-          onExportStatusChange(status, message);
-        }
-      },
-    });
-  }
-};
+  const handleExportAsPDF = () => {
+    if (roadmapRef.current) {
+      exportAsPDF(roadmapRef.current, {
+        filename: `${title.toLowerCase().replace(/\s+/g, "-")}.pdf`,
+        onStatusChange: (status, message) => {
+          setExportStatus({ status, message });
+          if (onExportStatusChange) {
+            onExportStatusChange(status, message);
+          }
+        },
+      });
+    }
+  };
   // If roadmap is an array (actual roadmap data)
   return (
     <div
       ref={roadmapRef}
-      className={`p-8 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 ${className}`}
+      className={`p-4 sm:p-6 lg:p-8 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 ${className}`}
     >
-      <h2 className="text-2xl font-bold text-center mb-4 bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent">
+      <h2 className="text-xl sm:text-2xl font-bold text-center mb-3 sm:mb-4 bg-gradient-to-r from-white via-sky-200 to-white bg-clip-text text-transparent">
         {title}
       </h2>
 
       {/* Roadmap Stages */}
-      <div className="relative mt-12">
+      <div className="relative mt-8 sm:mt-12">
         {roadmap.map((stage, index) => (
           <StageSection
             key={stage.id}
@@ -349,11 +359,11 @@ const handleExportAsPDF = () => {
       </div>
 
       {/* Export buttons */}
-      <div className="mt-12 flex flex-col items-center gap-4">
-        <div className="flex justify-center gap-4 mb-2">
+      <div className="mt-8 sm:mt-12 flex flex-col items-center gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-2 w-full sm:w-auto">
           <button
             onClick={handleExportAsPDF}
-            className="px-6 py-2 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/30 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 sm:px-6 py-2 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={exportStatus.status === "processing"}
           >
             {exportStatus.status === "processing" &&
@@ -401,7 +411,7 @@ const handleExportAsPDF = () => {
 
           <button
             onClick={handleExportAsImage}
-            className="px-6 py-2 border border-sky-500/30 hover:border-sky-500/50 text-sky-400 hover:text-sky-300 rounded-full text-sm font-medium transition-all duration-300 hover:bg-sky-900/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 sm:px-6 py-2 border border-sky-500/30 hover:border-sky-500/50 text-sky-400 hover:text-sky-300 rounded-full text-sm font-medium transition-all duration-300 hover:bg-sky-900/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={exportStatus.status === "processing"}
           >
             {exportStatus.status === "processing" &&
