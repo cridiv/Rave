@@ -32,8 +32,8 @@ function ClientAuthHandler() {
 
   useEffect(() => {
     // Debug what's in the URL
-    console.log("URL in client handler:", window.location.href);
-    console.log("Hash in client handler:", window.location.hash);
+    // console.log("URL in client handler:", window.location.href);
+    // console.log("Hash in client handler:", window.location.hash);
 
     const handleAuth = async () => {
       try {
@@ -66,7 +66,7 @@ function ClientAuthHandler() {
 
         // Check for hash-based auth data (#access_token=...)
         if (hash && hash.includes("access_token")) {
-          console.log("Found hash with access_token");
+          // console.log("Found hash with access_token");
 
           try {
             // Parse the hash to extract params (remove the leading #)
@@ -81,7 +81,7 @@ function ClientAuthHandler() {
               return;
             }
 
-            console.log("Found access token, setting session");
+            // console.log("Found access token, setting session");
 
             // Set the session using the token from the hash
             const { error: sessionError } = await supabase.auth.setSession({
@@ -100,7 +100,6 @@ function ClientAuthHandler() {
             console.log("Successfully authenticated, redirecting to chat");
             router.push("/chat");
           } catch (hashError) {
-            console.error("Error processing hash auth:", hashError);
             setMessage(
               `Error processing authentication data: ${hashError instanceof Error ? hashError.message : String(hashError)}`
             );
