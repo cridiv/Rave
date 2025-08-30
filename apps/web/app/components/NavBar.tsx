@@ -12,7 +12,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="navbar bg-gradient-to-r from-white/10 via-white/15 to-white/10 backdrop-blur-xl shadow-2xl shadow-black/10 rounded-full border border-white/20 fixed top-0 left-0 right-0 z-50 mx-4 ml-6 mt-4 p-2 w-[95%] hover:bg-gradient-to-r hover:from-white/15 hover:via-white/20 hover:to-white/15 transition-all duration-500">
+    <div className="navbar bg-gradient-to-r from-white/10 via-white/15 to-white/10 backdrop-blur-xl shadow-2xl shadow-black/10 rounded-full border border-white/20 fixed top-0 left-0 right-0 z-50 mx-4 md:ml-6 mt-4 p-2 w-[95%] hover:bg-gradient-to-r hover:from-white/15 hover:via-white/20 hover:to-white/15 transition-all duration-500">
       {/* Glass shine overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent rounded-3xl opacity-30 pointer-events-none"></div>
 

@@ -17,7 +17,7 @@ const Hero = () => {
   return (
     <div className="pt-4 font-proxima min-h-screen relative">
       {/* Hero Content - Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[80vh]  relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[80vh] md:px-5 relative z-10">
         {/* Text Column */}
 
         <div className="flex flex-col justify-center space-y-6">
