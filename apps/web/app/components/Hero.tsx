@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import BlurText from "../bits/BlurText";
+// import BlurText from "../bits/BlurText";
 import Orb from "../bits/Orb";
 
 const Hero = () => {
@@ -17,7 +17,7 @@ const Hero = () => {
   return (
     <div className="pt-4 font-proxima min-h-screen relative">
       {/* Hero Content - Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[80vh] px-5 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center min-h-[80vh]  relative z-10">
         {/* Text Column */}
 
         <div className="flex flex-col justify-center space-y-6">
@@ -28,15 +28,19 @@ const Hero = () => {
             </span>
           </div>
 
-          <div className="text-2xl">
-            <BlurText
-              text={`Experience the future of personalized journeys with Rave, where your unique path is crafted just for you.`}
+          <div>
+            <p className="text-lg text-gray-50 lg:text-xl leading-tight">
+              Experience the future of personalized journeys with Rave, where
+              your unique path is crafted just for you.
+            </p>
+            {/* <BlurText
+              text={``}
               delay={15}
               animateBy="letters"
               direction="top"
               onAnimationComplete={handleAnimationComplete}
-              className="text-2xl lg:text-2xl leading-tight"
-            />
+              className=""
+            /> */}
           </div>
 
           {/* CTA buttons */}

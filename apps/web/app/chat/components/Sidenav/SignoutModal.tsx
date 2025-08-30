@@ -24,7 +24,7 @@ const SignoutModal: React.FC<SignoutModalProps> = ({
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      console.error("❌ Sign-out failed:", error.message);
+      console.error("❌ Sign-out failed:");
     } else {
       window.location.href = "/";
     }
