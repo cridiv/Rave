@@ -61,7 +61,7 @@ const HowToUse = () => {
       </div>
 
       {/* Demo/Illustration */}
-      <div className="mt-20 max-w-4xl mx-auto">
+      <div className="hidden mt-20 max-w-4xl mx-auto">
         <SpotlightCard
           className="p-8 border-none bg-gradient-to-r from-black/80 via-black/70 to-black/80 backdrop-blur-xl shadow-2xl shadow-sky-500/20 border border-white/10"
           spotlightColor="rgba(14, 165, 233, 0.2)"
